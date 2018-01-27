@@ -30,6 +30,9 @@ class ECC:
         if x_int == 0 or y_int == 0:
             raise RuntimeError("X or Y is 0")
 
+        if not self.is_on_curve(x_int, y_int):
+            raise RuntimeError("x,y provided is not on the secp256k1 curve")
+
         prefix = b'\x04'
 
         x_bytes = x_int.to_bytes(32, 'big')
@@ -47,6 +50,9 @@ class ECC:
 
         if x_int == 0 or y_int == 0:
             raise RuntimeError("X or Y is equal to 0")
+
+        if not self.is_on_curve(x_int, y_int):
+            raise RuntimeError("x,y provided is not on the secp256k1 curve")
 
         if y_int % 2 == 0:
             prefix = b'\x02'
