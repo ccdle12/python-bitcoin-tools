@@ -216,13 +216,56 @@ class ECC_Tests(TestCase):
 
         compressed_sec = ECC().generate_compressed_SEC(pub_key[0], pub_key[1])
 
-        #Need to pass the compressed sec in pure byte format -> unhexlify()
         testnet_address = ECC().generate_address(True, compressed_sec)
 
         expected = "mo24iC138ffpdWiFsH8y7dq6v5CDD1UbiT"
 
-        print("There should be a generated testnet address")
+        print("There should be a generated compressed testnet address")
 
         self.assertEqual(expected, testnet_address)
 
+    def test_generate_testnet_address_uncompressed_3(self):
+        priv_key = 85766691447432562285107349766825790927431446373602486150911666480754112492464
+        pub_key = (43651727216793576570341989570883305974491642311510342469928224726666590034225,
+                   109857391791750504773247734335453148952192151977881622854599464318335318347795)
+
+        uncompressed_sec = ECC().generate_uncompressed_SEC(pub_key[0], pub_key[1])
+
+        testnet_address = ECC().generate_address(True, uncompressed_sec)
+
+        expected = "msfDb9z8hms8yBLwB5zkZCdqivbyvepL5k"
+
+        print("There should be a generated uncompressed testnet address")
+
+        self.assertEqual(expected, testnet_address)
+
+    def test_generate_mainnet_address_uncompressed_4(self):
+        priv_key = 85766691447432562285107349766825790927431446373602486150911666480754112492464
+        pub_key = (43651727216793576570341989570883305974491642311510342469928224726666590034225,
+                   109857391791750504773247734335453148952192151977881622854599464318335318347795)
+
+        uncompressed_sec = ECC().generate_uncompressed_SEC(pub_key[0], pub_key[1])
+
+        mainnet_address = ECC().generate_address(False, uncompressed_sec)
+
+        expected = "1D9GJ6u9tkRtC4sKTX2NjHRWrw1H2xDgqJ"
+
+        print("There should be a generated uncompressed mainnet address")
+
+        self.assertEqual(expected, mainnet_address)
+
+    def test_generate_mainnet_address_compressed_5(self):
+        priv_key = 85766691447432562285107349766825790927431446373602486150911666480754112492464
+        pub_key = (43651727216793576570341989570883305974491642311510342469928224726666590034225,
+                   109857391791750504773247734335453148952192151977881622854599464318335318347795)
+
+        compressed_sec = ECC().generate_compressed_SEC(pub_key[0], pub_key[1])
+
+        mainnet_address = ECC().generate_address(False, compressed_sec)
+
+        expected = "18W7R8v4KeEZrQEe9iAbHicn45bWNn2QBe"
+
+        print("There should be a generated compressed mainnet address")
+
+        self.assertEqual(expected, mainnet_address)
 

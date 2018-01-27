@@ -1,5 +1,4 @@
 import secrets
-import hashlib
 from pycoin.ecdsa import generator_secp256k1 as G
 from binascii import hexlify, unhexlify
 from helper import encode_base58, double_sha256, sha256_ripemd160

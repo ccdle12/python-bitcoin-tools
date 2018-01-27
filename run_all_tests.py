@@ -26,3 +26,8 @@ helper.run_test(ECC_Tests('test_compressed_SEC_should_raise_error_2'))
 helper.run_test(ECC_Tests('test_compressed_SEC_should_raise_error_3'))
 helper.run_test(ECC_Tests('test_generate_testnet_address_1'))
 helper.run_test(ECC_Tests('test_generate_testnet_address_2'))
+helper.run_test(ECC_Tests('test_generate_testnet_address_uncompressed_3'))
+helper.run_test(ECC_Tests('test_generate_mainnet_address_uncompressed_4'))
+helper.run_test(ECC_Tests('test_generate_mainnet_address_compressed_5'))
+
+
