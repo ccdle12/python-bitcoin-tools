@@ -1,7 +1,8 @@
 import secrets
-from pycoin.ecdsa import generator_secp256k1 as G
-from binascii import hexlify
 import hashlib
+from pycoin.ecdsa import generator_secp256k1 as G
+from binascii import hexlify, unhexlify
+from helper import encode_base58, double_sha256, sha256_ripemd160
 
 class ECC:
     P = 2**256 - 2**32 - 977
@@ -60,16 +61,32 @@ class ECC:
         return hexlify(compressed_SEC_bytes)
 
 
-    def generate_testnet_address(self, hex_SEC):
+    #TODO: Examine and Summarize helper hashing methods
+    def generate_address(self, testnet_bool, hex_SEC):
 
         if type(hex_SEC) != bytes:
             raise RuntimeError("Argument should be in bytes")
 
-        prefix = b'\x6f'
+        # Compressed and Uncompressed SEC functions return a hex represenation of its public key
+        # We need to unhexlify to turn it to bytes before any hashing
+        bytes_SEC = unhexlify(hex_SEC)
 
-        hashed_bytes = hashlib.new('ripemd160', hashlib.sha256(hex_SEC).digest()).digest()
+        if testnet_bool:
+            prefix = b'\x6f'
+        else:
+            prefix = b'\x00'
 
-        testnet_raw = prefix + hashed_bytes
+        # Hashing by SHA256 then RIPEMD160
+        hashed_bytes = sha256_ripemd160(bytes_SEC)
+
+        raw = prefix + hashed_bytes
+
+        # Double SHA256 hash and take the first 4 bytes as checksum
+        checksum = double_sha256(raw)[:4]
+
+        testnet_addr = encode_base58(raw + checksum)
+
+        return testnet_addr.decode('ascii')
 
 
 

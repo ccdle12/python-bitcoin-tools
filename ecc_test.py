@@ -1,6 +1,6 @@
 from unittest import TestCase
 from pycoin.ecdsa import generator_secp256k1 as G
-from binascii import hexlify
+from binascii import hexlify, unhexlify
 from ecc import ECC
 
 class ECC_Tests(TestCase):
@@ -202,11 +202,11 @@ class ECC_Tests(TestCase):
         pub_key = (43651727216793576570341989570883305974491642311510342469928224726666590034225,
                    109857391791750504773247734335453148952192151977881622854599464318335318347795)
 
-        print("THere should an error raised because we are not passing in a bytes value")
+        print("There should an error raised because we are not passing in a bytes value")
         compressed_sec = ECC().generate_compressed_SEC(pub_key[0], pub_key[1])
 
         with self.assertRaises(RuntimeError):
-            ECC().generate_testnet_address(pub_key[1])
+            ECC().generate_address(False, pub_key[1])
 
 
     def test_generate_testnet_address_2(self):
@@ -215,9 +215,13 @@ class ECC_Tests(TestCase):
                    109857391791750504773247734335453148952192151977881622854599464318335318347795)
 
         compressed_sec = ECC().generate_compressed_SEC(pub_key[0], pub_key[1])
-        testnet_address = ECC().generate_testnet_address(compressed_sec)
+
+        #Need to pass the compressed sec in pure byte format -> unhexlify()
+        testnet_address = ECC().generate_address(True, compressed_sec)
 
         expected = "mo24iC138ffpdWiFsH8y7dq6v5CDD1UbiT"
+
+        print("There should be a generated testnet address")
 
         self.assertEqual(expected, testnet_address)
 
