@@ -8,6 +8,9 @@ class ECC_Tests(TestCase):
         print("First test, should show ECC.P equal to Prime Number Field")
         self.assertEqual(ECC.P, 2**256 - 2**32 - 977)
 
+    # # # # # # # # # # # # # # # # # # # # # # #
+    # Test Generating Private and Public Keys   #
+    # # # # # # # # # # # # # # # # # # # # # # #
     def test_generate_priv_key(self):
         priv_key = ECC().generate_priv_key()
         print("Private key generated should be above 0 and below ECC.N")
@@ -57,6 +60,10 @@ class ECC_Tests(TestCase):
         print("Should return false, y has been tampered with, so it is not a valid point on the curve")
         self.assertEqual(False, ECC().is_on_curve(pub_key[0], pub_key[1]))
 
+
+    # # # # # # # # # # # # # # # # # # # # # #
+    # Test Generating SEC Format Public Keys  #
+    # # # # # # # # # # # # # # # # # # # # # #
     def test_uncompressed_SEC(self):
         priv_key = 111567339125642131892342490513530754499087578141730827863121284639663457832497
         pub_key = (4009715469895962904302745416817721540571577912364644137838095050706137667860,
@@ -183,6 +190,35 @@ class ECC_Tests(TestCase):
         pub_key = (43733605778270459583874364812384261459365992207657902102567152558096696733127,
                    64346778444748414606606796249150556060624935198788845168028978963277938956739)
 
-        print("There should be a raised RuntimeError because None is passed as argument to generate compressed SEC 3")
+        print("There should be a raised RuntimeError because 0 is passed as argument to generate compressed SEC 3")
         with self.assertRaises(RuntimeError):
             ECC().generate_compressed_SEC(0, pub_key[1])
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # #
+    # Test Generating Main net and Test net Addresses #
+    # # # # # # # # # # # # # # # # # # # # # # # # # #
+    def test_generate_testnet_address_1(self):
+        priv_key = 85766691447432562285107349766825790927431446373602486150911666480754112492464
+        pub_key = (43651727216793576570341989570883305974491642311510342469928224726666590034225,
+                   109857391791750504773247734335453148952192151977881622854599464318335318347795)
+
+        print("THere should an error raised because we are not passing in a bytes value")
+        compressed_sec = ECC().generate_compressed_SEC(pub_key[0], pub_key[1])
+
+        with self.assertRaises(RuntimeError):
+            ECC().generate_testnet_address(pub_key[1])
+
+
+    def test_generate_testnet_address_2(self):
+        priv_key = 85766691447432562285107349766825790927431446373602486150911666480754112492464
+        pub_key = (43651727216793576570341989570883305974491642311510342469928224726666590034225,
+                   109857391791750504773247734335453148952192151977881622854599464318335318347795)
+
+        compressed_sec = ECC().generate_compressed_SEC(pub_key[0], pub_key[1])
+        testnet_address = ECC().generate_testnet_address(compressed_sec)
+
+        expected = "mo24iC138ffpdWiFsH8y7dq6v5CDD1UbiT"
+
+        self.assertEqual(expected, testnet_address)
+
+

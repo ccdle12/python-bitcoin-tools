@@ -1,7 +1,7 @@
-from unittest import TestCase
 import secrets
 from pycoin.ecdsa import generator_secp256k1 as G
 from binascii import hexlify
+import hashlib
 
 class ECC:
     P = 2**256 - 2**32 - 977
@@ -9,14 +9,18 @@ class ECC:
     A = 0
     B = 7
 
+
     def generate_priv_key(self):
         return secrets.randbelow(self.N)
+
 
     def generate_pub_key(self, priv_key):
         return priv_key * G
 
+
     def is_on_curve(self, x, y):
         return (y ** 2) % self.P == (x ** 3 + self.A + self.B) % self.P
+
 
     def generate_uncompressed_SEC(self, x_int , y_int):
 
@@ -24,7 +28,7 @@ class ECC:
             raise RuntimeError("X or Y is None")
 
         if x_int == 0 or y_int == 0:
-            raise RuntimeError("X or Y is None")
+            raise RuntimeError("X or Y is 0")
 
         prefix = b'\x04'
 
@@ -34,6 +38,7 @@ class ECC:
         uncompressed_SEC_bytes = prefix + x_bytes + y_bytes
 
         return hexlify(uncompressed_SEC_bytes)
+
 
     def generate_compressed_SEC(self, x_int, y_int):
 
@@ -53,6 +58,20 @@ class ECC:
         compressed_SEC_bytes = prefix + x_bytes
 
         return hexlify(compressed_SEC_bytes)
+
+
+    def generate_testnet_address(self, hex_SEC):
+
+        if type(hex_SEC) != bytes:
+            raise RuntimeError("Argument should be in bytes")
+
+        prefix = b'\x6f'
+
+        hashed_bytes = hashlib.new('ripemd160', hashlib.sha256(hex_SEC).digest()).digest()
+
+        testnet_raw = prefix + hashed_bytes
+
+
 
 
 if __name__ == '__main__':
