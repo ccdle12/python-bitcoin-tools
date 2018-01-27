@@ -23,6 +23,9 @@ class ECC:
         if x_int == None or y_int == None:
             raise RuntimeError("X or Y is None")
 
+        if x_int == 0 or y_int == 0:
+            raise RuntimeError("X or Y is None")
+
         prefix = b'\x04'
 
         x_bytes = x_int.to_bytes(32, 'big')
@@ -33,6 +36,12 @@ class ECC:
         return hexlify(uncompressed_SEC_bytes)
 
     def generate_compressed_SEC(self, x_int, y_int):
+
+        if x_int == None or y_int == None:
+            raise RuntimeError("X or Y is None")
+
+        if x_int == 0 or y_int == 0:
+            raise RuntimeError("X or Y is equal to 0")
 
         if y_int % 2 == 0:
             prefix = b'\x02'
