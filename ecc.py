@@ -1,5 +1,6 @@
 import secrets
 from pycoin.ecdsa import generator_secp256k1 as G
+from pycoin.ecdsa.secp256k1 import Point, CurveFp
 from binascii import hexlify, unhexlify
 from helper import encode_base58, double_sha256, sha256_ripemd160
 
@@ -8,6 +9,7 @@ class ECC:
     N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
     A = 0
     B = 7
+    # G = Point(55066263022277343669578718895168534326250603453777594175500187360389116729240, 32670510020758816978083085130507043184471273380659243275938904335757337482424)
 
 
     def generate_priv_key(self):
@@ -15,7 +17,7 @@ class ECC:
 
 
     def generate_pub_key(self, priv_key):
-        return priv_key * G
+        return priv_key * self.G
 
 
     def is_on_curve(self, x, y):
@@ -93,6 +95,25 @@ class ECC:
 
         return testnet_addr.decode('ascii')
 
+    #TODO: Examine and review
+    def generate_signature(self, priv_key):
+        z = secrets.randbelow(2**256)
+        k = secrets.randbelow(2**256)
+        r = (k * self.G).x()
+
+        signature = (z + r * priv_key) * pow(k, self.N - 2, self.N) % self.N
+
+        return z, r, signature
+
+    #TODO: Verify_signature is failing with unsupported operand type
+    def verify_signature(self, z, r, s, pub_key):
+        u = z * pow(s, self.N-2, self.N) % self.N
+        print("U: {0}".format(u))
+        v = r * pow(s, self.N-2, self.N) % self.N
+        print("V: {0}".format(v))
+        point = Point(pub_key[0], pub_key[1], (self.P, self.A, self.B, self.N))
+
+        return (u*self.G + v*point).x() == r
 
 
 

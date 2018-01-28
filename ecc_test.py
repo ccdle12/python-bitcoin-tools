@@ -269,3 +269,20 @@ class ECC_Tests(TestCase):
 
         self.assertEqual(expected, mainnet_address)
 
+    # # # # # # # # # # # # # # # # # # # # # # # # # #
+    # Test Generating a Signature and Verifying       #
+    # # # # # # # # # # # # # # # # # # # # # # # # # #
+    def test_generating_signature(self):
+        priv_key = 85766691447432562285107349766825790927431446373602486150911666480754112492464
+        pub_key = (43651727216793576570341989570883305974491642311510342469928224726666590034225,
+                   109857391791750504773247734335453148952192151977881622854599464318335318347795)
+
+        z, r, s = ECC().generate_signature(priv_key)
+
+        print("It should return true since we have the private key to verify signature")
+        print("Z: {0}".format(z))
+        print("R: {0}".format(r))
+        print("S: {0}".format(s))
+
+        verified = ECC().verify_signature(z, r, s, pub_key)
+        self.assertTrue(verified)
