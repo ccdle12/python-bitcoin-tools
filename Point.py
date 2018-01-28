@@ -1,41 +1,68 @@
 from unittest import TestCase
 from ecc import ECC
 
-class Point():
+class Point:
 
-    def __init__(self, x, y):
-        if x is None or y is None:
-            raise RuntimeError("x or y is None")
-
-        if not ECC().is_on_curve(x, y):
-            raise RuntimeError("x and y are not on the curve: {0}, {1}".format(x, y))
-
+    def __init__(self, x, y, a, b):
         self.x = x
         self.y = y
+        self.a = a
+        self.b = b
 
+        if self.y**2 != self.x ** 3 + self.a * self.x + self.b:
+            raise RuntimeError("Points not on the curve")
 
-class Point_Tests(TestCase):
-    def test_creating_point(self):
-        point = Point(4009715469895962904302745416817721540571577912364644137838095050706137667860,
-                      32025336288095498019218993550383068707359510270784983226210884843871535451292)
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y and self.a == other.a and self.b == other.b
 
-        print("Should create a point and retrieve the x value and should be valid on the curve")
-        self.assertEqual(4009715469895962904302745416817721540571577912364644137838095050706137667860,
-                         point.x)
+    def __ne__(self, other):
+        return self.x != other.x and self.y != other.y and self.a != other.a and self.b != other.b
 
-    def test_should_fail_passing_None(self):
-        print("Should raise error that None is not an acceptable point")
+    def __add__(self, other):
+        if self.a != other.a or self.b != other.b:
+            raise RuntimeError("Points are using different curves")
+
+        # Calculate if self.x != other.x
+        if self.x != other.x:
+            slope = (self.y - other.y) / (self.x - other.x)
+
+            # x3 = s**2 -x1 -x2
+            x3 = slope**2 - self.x - other.x
+
+            # y3 = slope * (x1 - x3) - y1
+            y3 = slope * (self.x - x3) - self.y
+
+            return self.__class__(x3, y3, self.a, self.b)
+        else:
+            # Point Doubling because x is the same value
+            # Slope = (3* x1 ** 2 +a) / (2 * y1)
+            slope = (3*self.x**2 + self.a) / (2*self.y)
+
+            #x3 = slope**2 - 2*x1
+            x3 = slope**2 - 2*self.x
+
+            #y3 = slope * (x1 - x3) - y1
+            y3 = slope*(self.x-x3) - self.y
+
+            print("X3 and Y3: {0}, {1}".format(x3, y3))
+            return self.__class__(x3, y3, self.a, self.b)
+
+class PointTest(TestCase):
+    def test_points_on_curve(self):
         with self.assertRaises(RuntimeError):
-            point = Point(12, None)
+            Point(x=2, y=7, a=5, b=7)
 
-    def test_should_fail_since_x_y_not_on_ecc(self):
-        print("Should raise error that the points are not on the EC")
-        with self.assertRaises(RuntimeError):
-            point = Point(5, 5)
+        # Comparing for equality
+        p1 = Point(18, 77, 5, 7)
+        p2 = Point(18, 77, 5, 7)
+        self.assertEqual(p1, p2)
 
-    def test_creating_G_point(self):
-        G = Point(55066263022277343669578718895168534326250603453777594175500187360389116729240,
-                  32670510020758816978083085130507043184471273380659243275938904335757337482424)
+        # Adding two points
+        p1 = Point(x=3, y=7, a=5, b=7)
+        p2 = Point(x=-1, y=-1, a=5, b=7)
+        self.assertEqual(p1 + p2, Point(x=2, y=-5, a=5, b=7))
 
-        print("Should create the generator point and retrieve y")
-        self.assertEqual(32670510020758816978083085130507043184471273380659243275938904335757337482424, G.y)
+        # Adding two points by point doubling
+        a = Point(x=-1, y=1, a=5, b=7)
+        self.assertEqual(a + a, Point(x=18, y=-77, a=5, b=7))
+

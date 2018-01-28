@@ -1,6 +1,6 @@
 import secrets
 from pycoin.ecdsa import generator_secp256k1 as G
-from pycoin.ecdsa.secp256k1 import Point, CurveFp
+from pycoin.ecdsa.secp256k1 import Point
 from binascii import hexlify, unhexlify
 from helper import encode_base58, double_sha256, sha256_ripemd160
 

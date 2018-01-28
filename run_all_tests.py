@@ -1,20 +1,43 @@
 import test_helper as helper
 from ecc_test import ECC_Tests
-from Point import Point_Tests
+from FieldElement import FieldElementTest
+from Point import PointTest
+
+
+# # # # # # # # # # # # # # # # # # # # # #  #
+#  Field Element Test                        #
+# # # # # # # # # # # # # # # # # # # ## # # #
+helper.run_test(FieldElementTest('test_addition'))
+helper.run_test(FieldElementTest('test_subtraction'))
+helper.run_test(FieldElementTest('test_multiplication'))
+helper.run_test(FieldElementTest('test_powers'))
+helper.run_test(FieldElementTest('test_division'))
+helper.run_test(FieldElementTest('test_rmul'))
+
 
 # # # # # # # # # # # # # # # # # # # #
 #  Point Tests                        #
 # # # # # # # # # # # # # # # # # # # #
-helper.run_test(Point_Tests('test_creating_point'))
-helper.run_test(Point_Tests('test_should_fail_passing_None'))
-helper.run_test(Point_Tests('test_should_fail_since_x_y_not_on_ecc'))
-helper.run_test(Point_Tests('test_creating_G_point'))
+helper.run_test(PointTest('test_points_on_curve'))
+# helper.run_test(Point_Tests('test_creating_point'))
+# helper.run_test(Point_Tests('test_should_fail_passing_None'))
+# helper.run_test(Point_Tests('test_should_fail_since_x_y_not_on_ecc'))
+# helper.run_test(Point_Tests('test_creating_G_point'))
+# helper.run_test(Point_Tests('test_multiplying_a_tuple'))
+# helper.run_test(Point_Tests('test_init_Point_object'))
+# helper.run_test(Point_Tests('test_multiplying_points'))
+
+
+# helper.run_test(Point_Tests('test_add_two_points'))
+
+
 
 
 
 # # # # # # # # # # # # # # # # # # # #
 #  ECC Tests                          #
 # # # # # # # # # # # # # # # # # # # #
+
 # helper.run_test(ECC_Tests('test_P'))
 # helper.run_test(ECC_Tests('test_generate_priv_key'))
 # # Takes 9 - 10 seconds
