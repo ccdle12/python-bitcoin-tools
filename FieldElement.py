@@ -13,7 +13,15 @@ class FieldElement:
 
     # Checks for equality between self and other
     def __eq__(self, other):
+        # if other is None:
+        #     return True
+
         return self.num == other.num and self.prime == other.prime
+
+    def __ne__(self, other):
+        if other is None:
+            return True
+        return self.num != other.num or self.prime != other.prime
 
     # The operations performed when self and other are added together
     def __add__(self, other):
@@ -44,15 +52,12 @@ class FieldElement:
 
     def __truediv__(self, other):
         self.check_primes_the_same(other.prime)
-        exponent = pow(other.num, self.prime-2, self.prime)
-        print("Exponent: {0}".format(exponent))
-        num = (self.num * pow(other.num, self.prime-2, self.prime)) % self.prime
+        num = (self.num * pow(other.num, self.prime - 2, self.prime)) % self.prime
 
         return self.__class__(num, self.prime)
 
     def __rmul__(self, scalar):
         num = (scalar * self.num) % self.prime
-
         return self.__class__(num, self.prime)
 
     # Function to check if primes are the same number
@@ -174,9 +179,10 @@ class FieldElementTest(TestCase):
 
     def test_powers(self):
         p1 = FieldElement(9, 11)
-        self.assertEqual(p1**2, FieldElement(4, 11))
+        self.assertEqual(p1 ** 2, FieldElement(4, 11))
 
-        print("Will perform powers with an exponent greater than the prime, it should wrap around and keep the product within the field of the prime number")
+        print(
+            "Will perform powers with an exponent greater than the prime, it should wrap around and keep the product within the field of the prime number")
         p1 = FieldElement(2, 5)
         self.assertEqual(p1 ** 6, FieldElement(4, 5))
 
@@ -184,12 +190,11 @@ class FieldElementTest(TestCase):
         # Powers: 9
         # Num: 5
         # Power % (prime - 1) = 9 % (7-1) = 9 % 6 = 3
-            # exponent = 3
+        # exponent = 3
         # result = num ^ exponent = 5**3 = 125
         # final result = 125 % 7
         p1 = FieldElement(5, 7)
         self.assertEqual(p1 ** 9, FieldElement(6, 7))
-
 
         # Prime: 5
         # Powers: 12
@@ -216,35 +221,35 @@ class FieldElementTest(TestCase):
         with self.assertRaises(RuntimeError):
             p1 = FieldElement(2, 11)
             p2 = FieldElement(3, 7)
-            p3 = p1/p2
+            p3 = p1 / p2
 
         # Formula: (self.num * pow(other.num, self.prime - 2, self.prime)) % self.prime
-            # (2 * pow(3, (11-2), 11)) % 11
-            # Calculate the pow equation: 3^9 == 19,683
-            # exponent = 19,683 % 11 = 4
-            # 2 * 4 = 8
-            # 8 % 11 = 8
+        # (2 * pow(3, (11-2), 11)) % 11
+        # Calculate the pow equation: 3^9 == 19,683
+        # exponent = 19,683 % 11 = 4
+        # 2 * 4 = 8
+        # 8 % 11 = 8
         p1 = FieldElement(2, 11)
         p2 = FieldElement(3, 11)
-        print((p1/p2).num)
-        self.assertEqual(p1/p2, FieldElement(8, 11))
+        print((p1 / p2).num)
+        self.assertEqual(p1 / p2, FieldElement(8, 11))
 
         # Formula: (self.num * pow(other.num, self.prime - 2, self.prime)) % self.prime
-            # (4 * pow(3, (5-2), 5)) % 5
-            # 3^3 == 27
-            # exponent = 27 % 5 = 2
-            # 4 * 2 = 8
-            # 8 % 5 = 1
+        # (4 * pow(3, (5-2), 5)) % 5
+        # 3^3 == 27
+        # exponent = 27 % 5 = 2
+        # 4 * 2 = 8
+        # 8 % 5 = 1
         p1 = FieldElement(4, 5)
         p2 = FieldElement(3, 5)
         self.assertEqual(p1 / p2, FieldElement(3, 5))
 
         # Formula: (self.num * pow(other.num, self.prime - 2, self.prime)) % self.prime
-            # (6 * pow(4, (7-2), 7)) % 7
-            # 4^5 == 1024
-            # exponent = 1024 % 7 = 2
-            # 6 * 2 = 12
-            # 12 % 7 = 5
+        # (6 * pow(4, (7-2), 7)) % 7
+        # 4^5 == 1024
+        # exponent = 1024 % 7 = 2
+        # 6 * 2 = 12
+        # 12 % 7 = 5
         p1 = FieldElement(6, 7)
         p2 = FieldElement(4, 7)
         self.assertEqual(p1 / p2, FieldElement(5, 7))
@@ -253,7 +258,7 @@ class FieldElementTest(TestCase):
         p1 = FieldElement(5, 11)
         expected = p1 + p1
         scalar = 2
-        self.assertEqual(scalar*p1, expected)
+        self.assertEqual(scalar * p1, expected)
 
         p1 = FieldElement(5, 11)
         expected = p1 + p1 + p1
