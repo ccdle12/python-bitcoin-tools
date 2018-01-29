@@ -41,7 +41,7 @@ class S256Point(Point):
         else:
             return 'Point({},{})'.format(self.x, self.y)
 
-    #TODO: Review and run experiments to look into this function
+    # TODO: Review and run experiments to look into this function
     def __rmul__(self, scalar):
         # Binary Expansion on current
         current = self
@@ -112,9 +112,6 @@ class S256Point(Point):
         return address.decode('ascii')
 
 
-
-
-
 G = S256Point(
     0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798,
     0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8)
@@ -124,15 +121,17 @@ class S256Test(TestCase):
 
     def test_point_at_infinity(self):
         print("Should return None since point of infinity")
-        point = N*G
+        point = N * G
         self.assertIsNone(point.x)
 
     def test_generating_pub_key(self):
         secret = 999
-        point = secret*G
+        point = secret * G
         print("Secret multiply G should return the following points")
-        self.assertEqual(hexlify(point.x.num.to_bytes(32, 'big')).decode('ascii'), "9680241112d370b56da22eb535745d9e314380e568229e09f7241066003bc471")
-        self.assertEqual(hexlify(point.y.num.to_bytes(32, 'big')).decode('ascii'), "ddac2d377f03c201ffa0419d6596d10327d6c70313bb492ff495f946285d8f38")
+        self.assertEqual(hexlify(point.x.num.to_bytes(32, 'big')).decode('ascii'),
+                         "9680241112d370b56da22eb535745d9e314380e568229e09f7241066003bc471")
+        self.assertEqual(hexlify(point.y.num.to_bytes(32, 'big')).decode('ascii'),
+                         "ddac2d377f03c201ffa0419d6596d10327d6c70313bb492ff495f946285d8f38")
 
     def test_pubpoint(self):
         # write a test that tests the public point for the following
@@ -174,27 +173,25 @@ class S256Test(TestCase):
         print("-------------------------------------------------------------------------------------------")
         priv_key = 111567339125642131892342490513530754499087578141730827863121284639663457832497
         pub_key = S256Point(4009715469895962904302745416817721540571577912364644137838095050706137667860,
-                   32025336288095498019218993550383068707359510270784983226210884843871535451292)
+                            32025336288095498019218993550383068707359510270784983226210884843871535451292)
 
         print("There should be a true assertion that y in pub_key is EVEN")
         # We know the Y val of the pub_key is EVEN
         self.assertTrue(pub_key.y.num % 2 == 0)
 
-
         print("-------------------------------------------------------------------------------------------")
         priv_key = 52025986665857613263760395809269303684785643089926984150804307617991608511766
         pub_key = S256Point(43733605778270459583874364812384261459365992207657902102567152558096696733127,
-                   64346778444748414606606796249150556060624935198788845168028978963277938956739)
+                            64346778444748414606606796249150556060624935198788845168028978963277938956739)
 
         print("There should be a true assertion that y in pub_key is ODD")
         # We know the Y val of the pub_key is ODD
         self.assertFalse(pub_key.y.num % 2 == 0)
 
-
         print("-------------------------------------------------------------------------------------------")
         priv_key = 111567339125642131892342490513530754499087578141730827863121284639663457832497
         pub_key = S256Point(4009715469895962904302745416817721540571577912364644137838095050706137667860,
-                   32025336288095498019218993550383068707359510270784983226210884843871535451292)
+                            32025336288095498019218993550383068707359510270784983226210884843871535451292)
 
         sec_x = pub_key.x.num.to_bytes(32, 'big')
         sec_y = pub_key.y.num.to_bytes(32, 'big')
@@ -207,7 +204,7 @@ class S256Test(TestCase):
         print("-------------------------------------------------------------------------------------------")
         priv_key = 52025986665857613263760395809269303684785643089926984150804307617991608511766
         pub_key = S256Point(43733605778270459583874364812384261459365992207657902102567152558096696733127,
-                   64346778444748414606606796249150556060624935198788845168028978963277938956739)
+                            64346778444748414606606796249150556060624935198788845168028978963277938956739)
 
         sec_x = pub_key.x.num.to_bytes(32, 'big')
         sec_y = pub_key.y.num.to_bytes(32, 'big')
@@ -221,12 +218,11 @@ class S256Test(TestCase):
         # It should raise an error since we are passing None
         priv_key = 111567339125642131892342490513530754499087578141730827863121284639663457832497
         pub_key = S256Point(None,
-                   32025336288095498019218993550383068707359510270784983226210884843871535451292)
+                            32025336288095498019218993550383068707359510270784983226210884843871535451292)
 
         print("There should be a raised RuntimeError because None is passed as argument to SEC")
         with self.assertRaises(RuntimeError):
             pub_key.get_sec(compressed=True)
-
 
         print("-------------------------------------------------------------------------------------------")
         # It should raise an error since points not on curve
@@ -237,11 +233,10 @@ class S256Test(TestCase):
             pub_key = S256Point(43733605778270459583874364812384261459365992207657902102567152558096696,
                                 32025336288095498019218993550383068707359510270784983226210884843871535451292)
 
-
     def test_generate_address(self):
         priv_key = 85766691447432562285107349766825790927431446373602486150911666480754112492464
         pub_key = S256Point(43651727216793576570341989570883305974491642311510342469928224726666590034225,
-                   109857391791750504773247734335453148952192151977881622854599464318335318347795)
+                            109857391791750504773247734335453148952192151977881622854599464318335318347795)
 
         compressed_sec = pub_key.get_sec(compressed=True)
 
@@ -273,7 +268,7 @@ class S256Test(TestCase):
         pub_key = S256Point(43651727216793576570341989570883305974491642311510342469928224726666590034225,
                             109857391791750504773247734335453148952192151977881622854599464318335318347795)
 
-        #0360820086ce7d8015b537abb9937805b49e178db9151cfe43d0aa529919481931
+        # 0360820086ce7d8015b537abb9937805b49e178db9151cfe43d0aa529919481931
         compressed_sec = pub_key.get_sec(compressed=True)
 
         print("It should raise error as not passing bytes as argument")
@@ -288,7 +283,5 @@ class S256Test(TestCase):
         # 0360820086ce7d8015b537abb9937805b49e178db9151cfe43d0aa529919481931
         print("It should NOT raise error as passing bytes as argument")
         compressed_sec = pub_key.get_sec(compressed=True)
-        mainnet_address = pub_key.get_address(b'0360820086ce7d8015b537abb9937805b49e178db9151cfe43d0aa529919481931', testnet=False)
-
-
-
+        mainnet_address = pub_key.get_address(b'0360820086ce7d8015b537abb9937805b49e178db9151cfe43d0aa529919481931',
+                                              testnet=False)

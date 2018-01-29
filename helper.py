@@ -1,7 +1,8 @@
 import hashlib
-from binascii import hexlify, unhexlify
+from binascii import hexlify
 
 BASE58_ALPHABET = b'123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+
 
 def encode_base58(s):
     # Find the amount of leadings 0 bytes
@@ -26,6 +27,7 @@ def encode_base58(s):
 
 def double_sha256(s):
     return hashlib.sha256(hashlib.sha256(s).digest()).digest()
+
 
 def sha256_ripemd160(s):
     return hashlib.new('ripemd160', hashlib.sha256(s).digest()).digest()
