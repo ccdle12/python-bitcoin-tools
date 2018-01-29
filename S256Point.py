@@ -41,21 +41,27 @@ class S256Point(Point):
         else:
             return 'Point({},{})'.format(self.x, self.y)
 
-    # TODO: Review and run experiments to look into this function
     def __rmul__(self, scalar):
         # Binary Expansion on current
         current = self
 
         result = S256Point(None, None)
 
+        # Iterating in range of 256 and doubling each time ->
+        # when there is a 1 at the end of the binary number ->
+        # add to result
         for _ in range(self.bits):
-            # Bitwise AND, if bit is 1
+            # If last bit is 1, add current to self (adding -> p1 + p2 = p3)
             if scalar & 1:
+                # Calling super class (Point) to calculate the next point on the curve  ->
+                # adding result(x,y) + current (x,y)
                 result += current
 
+            # Calling super class (Point) to point double current(x,y) * current(x,y), why?
             current += current
 
-            # Shifting bits to the right by 1
+            # Shifting bits of scalar to the right by 1 and assigning new value
+            # Decrementing scalar by /2
             scalar >>= 1
 
         return result
@@ -83,7 +89,6 @@ class S256Point(Point):
 
         return hexlify(sec)
 
-    # TODO: Examine and Summarize helper hashing methods
     def get_address(self, sec, testnet=True):
 
         if type(sec) is not bytes:
