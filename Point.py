@@ -1,6 +1,5 @@
 from unittest import TestCase
 from FieldElement import FieldElement
-from ecc import ECC
 
 
 class Point:
@@ -42,6 +41,7 @@ class Point:
             return self
 
         # Check for reaching point at infinity
+        # X are the same point but y is not, this would be a perfectly horizontal line on the curve
         if self.x == other.x and self.y != other.y:
             return self.__class__(None, None, self.a, self.b)
 
