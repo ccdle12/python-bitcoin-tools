@@ -2,7 +2,7 @@ import secrets
 from S256Point import G, N, P, A, B
 import Signature
 
-
+#TODO: TURN THIS INTO MAIN
 class ECC:
     def generate_priv_key(self):
         return secrets.randbelow(N)
@@ -21,7 +21,6 @@ class ECC:
 
         sig = (z + r * priv_key) * pow(k, N - 2, N) % N
 
-        print(z)
         return Signature.Signature(z, r, sig)
 
 

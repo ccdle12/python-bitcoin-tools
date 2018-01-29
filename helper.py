@@ -39,6 +39,10 @@ def encode_base58(s):
     return prefix + bytes(result)
 
 
+def encode_base58_checksum(s):
+    return encode_base58(s + double_sha256(s)[:4]).decode('ascii')
+
+
 def double_sha256(s):
     return hashlib.sha256(hashlib.sha256(s).digest()).digest()
 

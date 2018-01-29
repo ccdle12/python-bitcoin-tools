@@ -64,3 +64,15 @@ class SignatureTest(TestCase):
         signature3 = ecc.ECC().generate_signature(priv_key2)
 
         self.assertFalse(signature2.verify(pub_key3))
+
+        print("------------------------------------------------")
+        print("Should verify signature as True, since we are using signature 4 and pub_key4")
+        priv_key4 = ecc.ECC().generate_priv_key()
+        pub_key4 = ecc.ECC().generate_pub_key(priv_key4)
+        signature4 = ecc.ECC().generate_signature(priv_key4)
+
+        self.assertTrue(signature4.verify(pub_key4))
+
+        print("------------------------------------------------")
+        print("Should verify signature as False, since we are using signature 4 and pub_key1")
+        self.assertFalse(signature4.verify(pub_key))
