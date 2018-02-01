@@ -146,6 +146,18 @@ class S256Point(Point):
         else:
             return S256Point(x, odd_beta)
 
+    def verify(self, z, sig):
+        # remember sig.r and sig.s are the main things we're checking
+        # remember 1/s = pow(s, N-2, N)
+        s_inv = pow(sig.s, N - 2, N)
+        # u = z / s
+        u = z * s_inv % N
+        # v = r / s
+        v = sig.r * s_inv % N
+        # u*G + v*P should have as the x coordinate, r
+        total = u * G + v * self
+        return total.x.num == sig.r
+
 
 G = S256Point(
     0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798,

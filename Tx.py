@@ -135,6 +135,11 @@ class Tx:
         # Parse the sec_pubkey to return x,y points
         point = S256Point.parse(sec)
 
+        # Use sig_has method on transaction to turn transactino into z
+        sig_hash = tx.sig_hash(index_pos, hash_type)
+
+        return point.verify(sig_hash, signature)
+
 
 class TxIn:
     cache = {}
