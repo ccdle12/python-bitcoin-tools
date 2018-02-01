@@ -1,6 +1,8 @@
 from unittest import TestCase
 import ecc
 from S256Point import N, G
+from io import BytesIO
+from binascii import hexlify
 
 
 class Signature:
@@ -23,6 +25,36 @@ class Signature:
         v = self.r * pow(self.sig, N - 2, N) % N
 
         return (u * G + v * pub_key).x.num == self.r
+
+    @classmethod
+    def parse(cls, signature_bin):
+        s = BytesIO(signature_bin)
+
+        compound = s.read(1)[0]
+
+        if compound != 0x30:
+            raise RuntimeError("Bad Signature")
+
+        length = s.read(1)[0]
+        if length + 2 != len(signature_bin):
+            raise RuntimeError("Bad Signature Length")
+
+        marker = s.read(1)[0]
+        if marker != 0x02:
+            raise RuntimeError("Bad Signature")
+
+        rlength = s.read(1)[0]
+        r = int(hexlify(s.read(rlength)), 16)
+        marker = s.read(1)[0]
+        if marker != 0x02:
+            raise RuntimeError("Bad Signature")
+
+        slength = s.read(1)[0]
+        s = int(hexlify(s.read(slength)), 16)
+        if len(signature_bin) != 6 + rlength + slength:
+            raise RuntimeError("Signature too long")
+
+        return cls(r, s)
 
 
 class SignatureTest(TestCase):

@@ -130,7 +130,6 @@ class Script:
     @classmethod
     def parse(cls, raw):
         stream = BytesIO(raw)
-        print("Raw: {0}".format(raw))
 
         elements = []
 
@@ -138,15 +137,11 @@ class Script:
 
         while current != b'':
             op_code = current[0]
-            print("Current: {0}".format(current))
-            print("OP_CODE: {0}".format(op_code))
 
             if 0 < op_code <= 75:
                 elements.append(stream.read(op_code))
-                print("Last Pushed Element: {0}".format(elements[:-1]))
             else:
                 elements.append(op_code)
-                print("Op Code pushed: {0}".format(elements[:-1]))
 
             current = stream.read(1)
         return cls(elements)
@@ -170,6 +165,21 @@ class Script:
 
             #<a9 : OP_HASH16-> <14 : Length of hash> < hash > <87 : OP_EQUAL>
             return 'p2sh'
+        elif type(self.element[0]) == bytes \
+                and len(self.element[0]) in (0x47, 0x48, 0x49) \
+                and type(self.element[1]) == bytes \
+                and len(self.element[1]) in (0x21, 0x41):
+            # p2pkh scriptSig:
+            # <signature> <pubkey>
+            return 'p2pkh sig'
+        elif len(self.element) > 1 \
+                and type(self.element[1]) == bytes \
+                and len(self.element[1]) in (0x47, 0x48, 0x49) \
+                and self.element[-1][-1] == 0xae:
+            # HACK: assumes p2sh is a multisig
+            # p2sh multisig:
+            # <x> <sig1> ... <sigm> <redeemscript ends with OP_CHECKMULTISIG>
+            return 'p2sh sig'
 
     def serialize(self):
         result = b''
@@ -181,6 +191,26 @@ class Script:
                 result += bytes([len(each_element)]) + each_element
 
         return result
+
+    def der_signature(self, index=0):
+        '''index isn't used for p2pkh, for p2sh, means one of m sigs'''
+        sig_type = self.type()
+        if sig_type == 'p2pkh sig':
+            return self.element[0]
+        elif sig_type == 'p2sh sig':
+            return self.element[index + 1]
+        else:
+            raise RuntimeError('script type needs to be p2pkh sig or p2sh sig')
+
+    def sec_pubkey(self, index=0):
+        '''index isn't used for p2pkh, for p2sh, means one of n pubkeys'''
+        sig_type = self.type()
+        if sig_type == 'p2pkh sig':
+            return self.element[1]
+        elif sig_type == 'p2sh sig':
+            # HACK: assumes p2sh is a multisig
+            redeem_script = Script.parse(self.element[-1])
+            return redeem_script.element[index + 1]
 
 
 class ScriptTest(TestCase):

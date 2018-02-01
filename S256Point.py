@@ -116,6 +116,36 @@ class S256Point(Point):
 
         return address.decode('ascii')
 
+    @classmethod
+    def parse(cls, sec_bin):
+        '''returns a Point object from a compressed sec binary (not hex)
+        '''
+        # Uncompressed SEC
+        if sec_bin[0] == 4:
+            x = int(hexlify(sec_bin[1:33]), 16)
+            y = int(hexlify(sec_bin[33:65]), 16)
+            return S256Point(x=x, y=y)
+
+        # Comprssed SEC
+        is_even = sec_bin[0] == 2
+        x = S256Field(int(hexlify(sec_bin[1:]), 16))
+
+        # right side of the equation y^2 = x^3 + 7
+        alpha = x ** 3 + S256Field(B)
+        # solve for left side
+        beta = alpha.sqrt()
+
+        if beta.num % 2 == 0:
+            even_beta = beta
+            odd_beta = S256Field(P - beta.num)
+        else:
+            even_beta = S256Field(P - beta.num)
+            odd_beta = beta
+        if is_even:
+            return S256Point(x, even_beta)
+        else:
+            return S256Point(x, odd_beta)
+
 
 G = S256Point(
     0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798,
