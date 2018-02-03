@@ -3,6 +3,7 @@ from Point import Point
 from unittest import TestCase
 from binascii import hexlify, unhexlify
 from helper import sha256_ripemd160, double_sha256, encode_base58
+import math
 
 P = 2 ** 256 - 2 ** 32 - 977
 N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
@@ -20,6 +21,9 @@ class S256Field(FieldElement):
 
     def __repr__(self):
         return self.hex()
+
+    def sqrt(self):
+        return self ** ((P + 1) // 4)
 
 
 class S256Point(Point):

@@ -116,12 +116,11 @@ class Tx:
         # convert this to a big-endian integer using int.from_bytes(x, 'big')
         return int.from_bytes(s256, 'big')
 
-    def validate_signature(self, hex_tx, index_pos):
+    def validate_signature(self, index_pos):
         # Parse the transaction
-        tx = self.parse(hex_tx)
 
         # Get the input at index_pos provided
-        tx_in = tx.tx_ins[index_pos]
+        tx_in = self.tx_ins[index_pos]
 
         # Get the der signature and hash type
         der, hash_type = tx_in.der_signature()
@@ -136,7 +135,7 @@ class Tx:
         point = S256Point.parse(sec)
 
         # Use sig_has method on transaction to turn transactino into z
-        sig_hash = tx.sig_hash(index_pos, hash_type)
+        sig_hash = self.sig_hash(index_pos, hash_type)
 
         return point.verify(sig_hash, signature)
 
@@ -212,7 +211,9 @@ class TxIn:
         return tx.tx_outs[self.prev_index].amount
 
     def der_signature(self, index=0):
+
         signature = self.script_sig.der_signature(index=index)
+
         # last byte is the hash_type, rest is the signature
         return signature[:-1], signature[-1]
 
@@ -322,7 +323,7 @@ class TxTest(TestCase):
         hex_tx = '01000000012f5ab4d2666744a44864a63162060c2ae36ab0a2375b1c2b6b43077ed5dcbed6000000006a473044022034177d53fcb8e8cba62432c5f6cc3d11c16df1db0bce20b874cfc61128b529e1022040c2681a2845f5eb0c46adb89585604f7bf8397b82db3517afb63f8e3d609c990121035e8b10b675477614809f3dde7fd0e33fb898af6d86f51a65a54c838fddd417a5feffffff02c5872e00000000001976a91441b835c78fb1406305727d8925ff315d90f9bbc588acae2e1700000000001976a914c300e84d277c6c7bcf17190ebc4e7744609f8b0c88ac31470600'
         index = 0
 
-        validated_sig = validate_signature(hex_tx, index)
+        tx = Tx.parse(hex_tx)
 
-        self.assertTrue(validated_sig)
+        self.assertTrue(tx.validate_signature(index))
 
