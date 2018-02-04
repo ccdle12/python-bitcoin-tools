@@ -2,6 +2,7 @@ from unittest import TestCase
 from S256Point import N, G, B, P, A
 import secrets
 from helper import encode_base58_checksum
+from Signature import Signature
 
 
 class PrivateKey:
@@ -39,6 +40,18 @@ class PrivateKey:
     @classmethod
     def import_private_key(cls, secret):
         return cls(secret)
+
+    def sign(self, z):
+        # Rand int
+        k = secrets.randbelow(2 ** 256)
+        r = (k * G).x.num
+
+        s = (z + r * self.secret) * pow(k, N - 2, N) % N
+
+        if s > N // 2:
+            s = N - s
+
+        return Signature(r, s)
 
 
 class PrivateKeyTest(TestCase):

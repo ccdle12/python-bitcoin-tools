@@ -1,7 +1,7 @@
 from unittest import TestCase
 from binascii import unhexlify
 from Tx import TxIn, TxOut, Tx
-from helper import decode_base58, p2pkh_script, bitcoin_to_satoshi
+from helper import decode_base58, p2pkh_script, bitcoin_to_satoshi, SIGHASH_ALL
 import PrivateKey
 
 
@@ -73,6 +73,23 @@ class Main:
                             amount=change_amount_in_satoshis,
                             script_pub_key=change_output_p2pkh_script
                           ))
+
+        # sign with tx object with SIGHASH_ALL
+        sig_hash = SIGHASH_ALL
+
+        # Create the Tx object with all the inputs and outputs created above
+        transaction = Tx(version=1,
+                         tx_ins=tx_inputs,
+                         tx_outs=tx_outputs,
+                         locktime=0,
+                         testnet=True)
+
+        # Hash of the message to sign
+        z = transaction.sig_hash(0, sig_hash)
+
+        # Sign z with the private key
+        der = self.keys.sign(z).der()
+
 
 class MainTest(TestCase):
 
