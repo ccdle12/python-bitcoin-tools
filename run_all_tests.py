@@ -99,7 +99,7 @@ from blockchain_explorer_helper import BlockchainExplorerTest
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #  Blockchain Explorer Test                             #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# helper.run_test(BlockChainExplorerTest('test_decode_base58'))
+helper.run_test(BlockchainExplorerTest('test_request_to_block_cypher'))
 
 # # # # # # # # # # # # # # # # # # # # # #
 #  NOT BEING USED                         #
