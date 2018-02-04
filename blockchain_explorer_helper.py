@@ -35,3 +35,8 @@ class BlockchainExplorerTest(TestCase):
 
         with self.assertRaises(RuntimeError):
             BlockchainExplorer().get_balance("m2PVhGePAy1GfZNotr6LeXfQ5nw")
+
+        print("--------------------------------------------------------------")
+        print("Should construct a transaction")
+
+        # Blockchain Explorer should just pass the transaction as string to the api
