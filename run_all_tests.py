@@ -9,6 +9,7 @@ from Tx import TxTest
 from Script import ScriptTest
 from main import MainTest
 from helper import HelperTest
+from blockchain_explorer_helper import BlockchainExplorerTest
 
 
 # # # # # # # # # # # # # # # # # # # # # #  #
@@ -32,11 +33,11 @@ from helper import HelperTest
 # # # # # # # # # # # # # # # # # # # #
 #  S256 Point Tests                   #
 # # # # # # # # # # # # # # # # # # # #
-helper.run_test(S256Test('test_point_at_infinity'))
-helper.run_test(S256Test('test_generating_pub_key'))
-helper.run_test(S256Test('test_pubpoint'))
-helper.run_test(S256Test('test_generate_sec_pub_key'))
-helper.run_test(S256Test('test_generate_address'))
+# helper.run_test(S256Test('test_point_at_infinity'))
+# helper.run_test(S256Test('test_generating_pub_key'))
+# helper.run_test(S256Test('test_pubpoint'))
+# helper.run_test(S256Test('test_generate_sec_pub_key'))
+# helper.run_test(S256Test('test_generate_address'))
 
 
 #//TODO: RENAME ECC_TESTS TO ECCTest
@@ -87,12 +88,18 @@ helper.run_test(S256Test('test_generate_address'))
 # # # # # # # # # # # # # # # # # # # # # #
 #  Wallet Test                            #
 # # # # # # # # # # # # # # # # # # # # # #
-helper.run_test(MainTest('test_private_key_generated'))
+# helper.run_test(MainTest('test_private_key_generated'))
 
 # # # # # # # # # # # # # # # # # # # # # #
 #  Helper Test                            #
 # # # # # # # # # # # # # # # # # # # # # #
-helper.run_test(HelperTest('test_decode_base58'))
+# helper.run_test(HelperTest('test_decode_base58'))
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#  Blockchain Explorer Test                             #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# helper.run_test(BlockChainExplorerTest('test_decode_base58'))
 
 # # # # # # # # # # # # # # # # # # # # # #
 #  NOT BEING USED                         #
