@@ -1,5 +1,6 @@
 import hashlib
 from binascii import hexlify
+from unittest import TestCase
 
 SIGHASH_ALL = 1
 SIGHASH_NONE = 2
@@ -61,7 +62,8 @@ def little_endian_to_int(b):
 def int_to_little_endian(num, length):
     return int.to_bytes(num, length, 'little')
 
-#TODO: NEED to understand varint types better
+
+# TODO: NEED to understand varint types better
 def encode_varint(i):
     # Encodes an integer to varint
     # if i is less than 253 (int)
@@ -75,9 +77,6 @@ def encode_varint(i):
         return b'\xff' + int_to_little_endian(i, 8)
     else:
         raise RuntimeError('integer too large: {}'.format(i))
-
-
-
 
 
 def read_varint(s):
@@ -99,3 +98,28 @@ def read_varint(s):
 
 def satoshi_to_bitcoin(satoshi):
     return satoshi / 100000000
+
+
+def decode_base58(address):
+    num = 0
+    # Iterate over each string, in the address, c is the integer value of the ascii character
+    for c in address.encode('ascii'):
+        num *= 58
+        num += BASE58_ALPHABET.index(c)
+
+    combined = num.to_bytes(25, byteorder='big')
+    checksum = combined[-4:]
+
+    # Check that combined bytes, double_sha256() -> take the last 4 bytes of combined and then take the first 4 bytes
+    # This should equal checksum
+    if double_sha256(combined[:-4])[:4] != checksum:
+        raise RuntimeError('malformed address: {} {}'.format(checksum, double_sha256(combined)[:4]))
+
+    return combined[1:-4]
+
+
+class HelperTest(TestCase):
+    def test_decode_base58(self):
+        print("Should decode base 58")
+        expected = b'029692862d60b5f84ba706b37939d074b6c58085'
+        self.assertEqual(expected, hexlify(decode_base58("mfke2PVhGePAy1GfZNotr6LeXfQ5nwnZTa")))

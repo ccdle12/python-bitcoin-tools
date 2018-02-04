@@ -93,7 +93,7 @@ class S256Point(Point):
 
         return hexlify(sec)
 
-    def get_address(self, sec, testnet=True):
+    def get_address(self, sec, mainnet=False):
 
         if type(sec) is not bytes:
             raise RuntimeError("sec must be passed as bytes format")
@@ -101,10 +101,11 @@ class S256Point(Point):
         # Need to turn sec into bytes before hashing
         sec_bytes = unhexlify(sec)
 
-        if testnet:
-            prefix = b'\x6f'
-        else:
+        if mainnet:
             prefix = b'\x00'
+        else:
+            prefix = b'\x6f'
+
 
         # SHA256 -> RIMPEMD160
         hashed_sec_bytes = sha256_ripemd160(sec_bytes)
@@ -291,7 +292,7 @@ class S256Test(TestCase):
 
         compressed_sec = pub_key.get_sec(compressed=True)
 
-        testnet_address = pub_key.get_address(compressed_sec, testnet=True)
+        testnet_address = pub_key.get_address(compressed_sec, mainnet=False)
 
         expected = "mo24iC138ffpdWiFsH8y7dq6v5CDD1UbiT"
 
@@ -307,7 +308,7 @@ class S256Test(TestCase):
         compressed_sec = pub_key.get_sec(compressed=True)
         print(type(compressed_sec))
 
-        mainnet_address = pub_key.get_address(compressed_sec, testnet=False)
+        mainnet_address = pub_key.get_address(compressed_sec, mainnet=True)
 
         expected = "18W7R8v4KeEZrQEe9iAbHicn45bWNn2QBe"
 
@@ -324,7 +325,7 @@ class S256Test(TestCase):
 
         print("It should raise error as not passing bytes as argument")
         with self.assertRaises(RuntimeError):
-            pub_key.get_address("0360820086ce7d8015b537abb9937805b49e178db9151cfe43d0aa529919481931", testnet=False)
+            pub_key.get_address("0360820086ce7d8015b537abb9937805b49e178db9151cfe43d0aa529919481931", mainnet=True)
 
         print("-------------------------------------------------------------------------------------------")
         priv_key = 85766691447432562285107349766825790927431446373602486150911666480754112492464
@@ -335,4 +336,4 @@ class S256Test(TestCase):
         print("It should NOT raise error as passing bytes as argument")
         compressed_sec = pub_key.get_sec(compressed=True)
         mainnet_address = pub_key.get_address(b'0360820086ce7d8015b537abb9937805b49e178db9151cfe43d0aa529919481931',
-                                              testnet=False)
+                                              mainnet=True)
