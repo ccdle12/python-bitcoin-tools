@@ -94,6 +94,7 @@ helper.run_test(MainTest('test_private_key_generated'))
 #  Helper Test                            #
 # # # # # # # # # # # # # # # # # # # # # #
 # helper.run_test(HelperTest('test_decode_base58'))
+# helper.run_test(HelperTest('test_bitcoin_to_satoshi'))
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

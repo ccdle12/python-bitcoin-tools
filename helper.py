@@ -97,7 +97,11 @@ def read_varint(s):
 
 
 def satoshi_to_bitcoin(satoshi):
-    return satoshi / 100000000
+    return int(satoshi / 100000000)
+
+
+def bitcoin_to_satoshi(bitcoin):
+    return int(bitcoin * 100000000)
 
 
 def decode_base58(address):
@@ -118,8 +122,18 @@ def decode_base58(address):
     return combined[1:-4]
 
 
+def p2pkh_script(h160):
+    # Takes the h160 of an address and inserts it into the p2pkh scriptPubKey format
+    return b'\x76\xa9\x14' + h160 + b'\x88\xac'
+
+
 class HelperTest(TestCase):
     def test_decode_base58(self):
         print("Should decode base 58")
         expected = b'029692862d60b5f84ba706b37939d074b6c58085'
         self.assertEqual(expected, hexlify(decode_base58("mfke2PVhGePAy1GfZNotr6LeXfQ5nwnZTa")))
+
+    def test_bitcoin_to_satoshi(self):
+        print("Should return bitcoin to satoshi")
+        expected = 50000000
+        self.assertEqual(expected, bitcoin_to_satoshi(0.5))
