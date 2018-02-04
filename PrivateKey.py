@@ -5,8 +5,13 @@ from helper import encode_base58_checksum
 
 
 class PrivateKey:
-    def __init__(self):
-        self.secret = secrets.randbelow(N)
+    def __init__(self, secret=None):
+
+        if secret is None:
+            self.secret = secrets.randbelow(N)
+        else:
+            self.secret = secret
+
         self.public_key = self.secret * G
 
         if self.is_on_curve() is False:
@@ -30,6 +35,10 @@ class PrivateKey:
             wif = wif + b'\x01'
 
         return encode_base58_checksum(wif)
+
+    @classmethod
+    def import_private_key(cls, secret):
+        return cls(secret)
 
 
 class PrivateKeyTest(TestCase):
@@ -124,7 +133,7 @@ class PrivateKeyTest(TestCase):
         expected = "9"
         self.assertEqual(expected, PrivateKey().get_WIF(compressed=False, mainnet=False)[:1])
 
-        print("----------------------------------------------------------")                   
+        print("----------------------------------------------------------")
         print("Should create wallet import format for testnet and compressed")
         expected = "c"
         self.assertEqual(expected, PrivateKey().get_WIF(compressed=True, mainnet=False)[:1])
