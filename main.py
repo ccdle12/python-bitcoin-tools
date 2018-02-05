@@ -102,11 +102,10 @@ class Main:
         transaction.tx_ins[0].script_sig = Script([sig, self.sec])
         print("SCRIPT SIG on [0] index input: {}".format(transaction.tx_ins[0].script_sig))
 
-        # Create a block explorer instance and serialize t
+        # Create a block explorer instance and serialize transaction
         block_explorer = blockchain_explorer_helper.BlockchainExplorer()
         raw_tx = hexlify(transaction.serialize()).decode('ascii')
-
-        print(raw_tx)
+        print("Raw Tx: {}".format(raw_tx))
 
         # raw_tx = "01000000018d37dbef10f2e6757c532c93ecd39f01f646c6055a450db0dbd79a133f276160010000006b483045022100b9fc9c18360615a343f48bedf7ce230f02a7d98bef4085711bc5c756906ba7dd0220698e1d1bb3dbc16c5032082d4b8554d00b8bd8043831f734e93011ecdffc0a8801210275bdc1759e7ffb5fb1f07655d5572cec8219b28250acdbc7f936396884d196f2ffffffff0280841e00000000001976a914029692862d60b5f84ba706b37939d074b6c5808588aca0f01900000000001976a914ada5b5ba34eb8774388d0ac30c5bc3c8e8afae0388ac00000000"
 

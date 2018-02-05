@@ -101,7 +101,7 @@ from blockchain_explorer_helper import BlockchainExplorerTest
 #  Wallet Test                            #
 # # # # # # # # # # # # # # # # # # # # # #
 helper.run_test(MainTest('test_private_key_generated'))
-helper.run_test(MainTest('test_p2pkh_generation'))
+# helper.run_test(MainTest('test_p2pkh_generation'))
 
 
 

@@ -97,6 +97,7 @@ class Tx:
 
         # grab the input at the input_index
         signing_input = alt_tx_ins[input_index]
+        print("SIGNIN INPUT: {}".format(signing_input))
 
         # grab the script_pubkey of the input
         script_pubkey = signing_input.script_pubkey(self.testnet)
@@ -161,6 +162,12 @@ class TxIn:
         self.prev_index = prev_index
         self.script_sig = Script.parse(script_sig)
         self.sequence = sequence
+
+    def __repr__(self):
+        return '{}:{}'.format(
+            hexlify(self.prev_tx).decode('ascii'),
+            self.prev_index,
+        )
 
     @classmethod
     def parse(cls, stream):
