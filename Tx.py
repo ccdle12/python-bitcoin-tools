@@ -17,6 +17,20 @@ class Tx:
         self.locktime = locktime
         self.testnet = testnet
 
+    def __repr__(self):
+        tx_ins = ''
+        for tx_in in self.tx_ins:
+            tx_ins += tx_in.__repr__() + '\n'
+        tx_outs = ''
+        for tx_out in self.tx_outs:
+            tx_outs += tx_out.__repr__() + '\n'
+        return 'version: {}\ntx_ins:\n{}\ntx_outs:\n{}\nlocktime: {}\n'.format(
+            self.version,
+            tx_ins,
+            tx_outs,
+            self.locktime,
+        )
+
     # Allows method to be called without instantiating class, cls points to the class not the object instance
     @classmethod
     def parse(cls, transaction_bytes):
@@ -87,7 +101,7 @@ class Tx:
         # iterate over self.tx_ins
         for tx_in in self.tx_ins:
             # create a new TxIn that has a blank script_sig (b'') and add to alt_tx_ins
-            print(hexlify(tx_in.prev_hash))
+            # print(hexlify(tx_in.prev_hash))
             alt_tx_ins.append(TxIn(
                 prev_hash=tx_in.prev_hash,
                 prev_index=tx_in.prev_index,
@@ -96,8 +110,9 @@ class Tx:
             ))
 
         # grab the input at the input_index
+        # "1b562bc7c059af8a61bec721bae5c8f47d929389049b38525045e6330ac7acf2:1"
         signing_input = alt_tx_ins[input_index]
-        print("SIGNIN INPUT: {}".format(signing_input))
+        print("SIGNING INPUT: {}".format(signing_input))
 
         # grab the script_pubkey of the input
         script_pubkey = signing_input.script_pubkey(self.testnet)
@@ -212,7 +227,7 @@ class TxIn:
     def fetch_tx(self, testnet=True):
         if self.prev_hash not in self.cache:
             url = self.get_url(testnet) + '/rawtx/{}'.format(hexlify(self.prev_hash).decode('ascii'))
-            print(url)
+            # print(url)
             response = requests.get(url)
 
             js_response = response.json()
@@ -247,9 +262,10 @@ class TxIn:
         '''
         # use self.fetch_tx to get the transaction
         tx = self.fetch_tx(testnet=testnet)
+        print("Tx fetched in script_pubkey: {}".format(tx))
         # get the output at self.prev_index
         # return the script_pubkey property and serialize
-        print("Prev script_pub_key: {}".format(tx.tx_outs[self.prev_index].script_pub_key))
+        # print("Prev script_pub_key: {}".format(tx.tx_outs[self.prev_index].script_pub_key))
         return tx.tx_outs[self.prev_index].script_pub_key
 
 
