@@ -61,7 +61,7 @@ class S256Point(Point):
                 # adding result(x,y) + current (x,y)
                 result += current
 
-            # Calling super class (Point) to point double current(x,y) * current(x,y), why?
+            # Calling super class (Point) to point double current(x,y) * current(x,y)
             current += current
 
             # Shifting bits of scalar to the right by 1 and assigning new value
