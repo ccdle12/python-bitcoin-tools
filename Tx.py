@@ -165,7 +165,7 @@ class TxIn:
 
     def __repr__(self):
         return '{}:{}'.format(
-            hexlify(self.prev_tx).decode('ascii'),
+            hexlify(self.prev_hash).decode('ascii'),
             self.prev_index,
         )
 
