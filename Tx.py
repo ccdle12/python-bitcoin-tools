@@ -275,7 +275,7 @@ class TxOut:
         self.script_pub_key = Script.parse(script_pub_key)
 
     def __repr__(self):
-        return '{}:{}'.format(self.amount, self.script_pubkey)
+        return '{}:{}'.format(self.amount, self.script_pub_key)
 
     @classmethod
     def parse(cls, stream):
