@@ -86,11 +86,6 @@ from blockchain_explorer_helper import BlockchainExplorerTest
 
 
 # # # # # # # # # # # # # # # # # # # # # #
-#  Wallet Test                            #
-# # # # # # # # # # # # # # # # # # # # # #
-helper.run_test(MainTest('test_private_key_generated'))
-
-# # # # # # # # # # # # # # # # # # # # # #
 #  Helper Test                            #
 # # # # # # # # # # # # # # # # # # # # # #
 # helper.run_test(HelperTest('test_decode_base58'))
@@ -100,7 +95,12 @@ helper.run_test(MainTest('test_private_key_generated'))
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #  Blockchain Explorer Test  - HTTP Requests            #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# helper.run_test(BlockchainExplorerTest('test_request_to_block_cypher'))
+helper.run_test(BlockchainExplorerTest('test_request_to_block_cypher'))
+
+# # # # # # # # # # # # # # # # # # # # # #
+#  Wallet Test                            #
+# # # # # # # # # # # # # # # # # # # # # #
+helper.run_test(MainTest('test_private_key_generated'))
 
 
 
