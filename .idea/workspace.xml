@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="93512b04-935c-461d-9ca7-5322d841015a" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/Tx.py" afterPath="$PROJECT_DIR$/Tx.py" />
-      <change beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
-    </list>
+    <list default="true" id="93512b04-935c-461d-9ca7-5322d841015a" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.idea/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,8 +15,8 @@
       <file leaf-file-name="Tx.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Tx.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="321">
-              <caret line="250" column="57" lean-forward="false" selection-start-line="250" selection-start-column="57" selection-end-line="250" selection-end-column="57" />
+            <state relative-caret-position="342">
+              <caret line="32" column="0" lean-forward="false" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
               </folding>
@@ -271,17 +268,17 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Tx.py</url>
-          <line>103</line>
+          <line>117</line>
           <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Tx.py</url>
-          <line>249</line>
+          <line>263</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Tx.py</url>
-          <line>213</line>
+          <line>227</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
       </breakpoints>
@@ -662,8 +659,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Tx.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="321">
-          <caret line="250" column="57" lean-forward="false" selection-start-line="250" selection-start-column="57" selection-end-line="250" selection-end-column="57" />
+        <state relative-caret-position="342">
+          <caret line="32" column="0" lean-forward="false" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
           <folding>
             <element signature="e#0#29#0" expanded="true" />
           </folding>

@@ -274,6 +274,9 @@ class TxOut:
         self.amount = amount
         self.script_pub_key = Script.parse(script_pub_key)
 
+    def __repr__(self):
+        return '{}:{}'.format(self.amount, self.script_pubkey)
+
     @classmethod
     def parse(cls, stream):
         # Read amount of the output, Little Endian, 8 bytes as int?
