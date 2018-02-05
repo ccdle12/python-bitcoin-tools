@@ -3,7 +3,7 @@ from S256Point import N, G, B, P, A
 import secrets
 from helper import encode_base58_checksum
 from Signature import Signature
-
+from random import randint
 
 class PrivateKey:
     def __init__(self, secret=None):
@@ -43,7 +43,7 @@ class PrivateKey:
 
     def sign(self, z):
         # Rand int
-        k = secrets.randbelow(2 ** 256)
+        k = randint(0,  2**256)
         r = (k * G).x.num
 
         s = (z + r * self.secret) * pow(k, N - 2, N) % N

@@ -1,5 +1,5 @@
 from unittest import TestCase
-from binascii import unhexlify
+from binascii import unhexlify, hexlify
 from io import BytesIO
 
 OP_CODES = {
@@ -125,7 +125,7 @@ OP_CODES = {
 
 class Script:
     def __init__(self, element):
-        self.element = element
+        self.elements = element
 
     @classmethod
     def parse(cls, raw):
@@ -146,36 +146,47 @@ class Script:
             current = stream.read(1)
         return cls(elements)
 
+    # Returns a print format for the object
+    def __repr__(self):
+        result = ''
+        for element in self.elements:
+            if type(element) == int:
+                result += '{} '.format(OP_CODES[element])
+            else:
+                result += '{} '.format(hexlify(element))
+        return result
+
     def type(self):
-        if len(self.element) == 0:
+        if len(self.elements) == 0:
             return 'blank'
-        elif self.element[0] == 118 \
-                and self.element[1] == 169 \
-                and len(self.element[2]) == 20 \
-                and self.element[3] == 136 \
-                and self.element[4] == 172:
+        elif self.elements[0] == 0x76 \
+             and self.elements[1] == 0xa9 \
+             and type(self.elements[2]) == bytes \
+             and len(self.elements[2]) == 0x14 \
+             and self.elements[3] == 0x88 \
+             and self.elements[4] == 0xac:
 
             # hex/int
             # script_pubkey = <76/118 : OP_DUP> <a9/169 : OP_HASH160> <14/20 : Length of hash> <88/136 : OP_EQUAL_VERIFY> <ac/172 : OP_CHECKSIG>
             return 'p2pkh'
-        elif self.element[0] == 0xa9 \
-            and type(self.element[1]) is bytes\
-            and len(self.element[1]) == 0x14 \
-            and self.element[2] == 0x87:
+        elif self.elements[0] == 0xa9 \
+            and type(self.elements[1]) is bytes\
+            and len(self.elements[1]) == 0x14 \
+            and self.elements[2] == 0x87:
 
             #<a9 : OP_HASH16-> <14 : Length of hash> < hash > <87 : OP_EQUAL>
             return 'p2sh'
-        elif type(self.element[0]) == bytes \
-                and len(self.element[0]) in (0x47, 0x48, 0x49) \
-                and type(self.element[1]) == bytes \
-                and len(self.element[1]) in (0x21, 0x41):
+        elif type(self.elements[0]) == bytes \
+                and len(self.elements[0]) in (0x47, 0x48, 0x49) \
+                and type(self.elements[1]) == bytes \
+                and len(self.elements[1]) in (0x21, 0x41):
             # p2pkh scriptSig:
             # <signature> <pubkey>
             return 'p2pkh sig'
-        elif len(self.element) > 1 \
-                and type(self.element[1]) == bytes \
-                and len(self.element[1]) in (0x47, 0x48, 0x49) \
-                and self.element[-1][-1] == 0xae:
+        elif len(self.elements) > 1 \
+                and type(self.elements[1]) == bytes \
+                and len(self.elements[1]) in (0x47, 0x48, 0x49) \
+                and self.elements[-1][-1] == 0xae:
             # HACK: assumes p2sh is a multisig
             # p2sh multisig:
             # <x> <sig1> ... <sigm> <redeemscript ends with OP_CHECKMULTISIG>
@@ -184,7 +195,7 @@ class Script:
     def serialize(self):
         result = b''
 
-        for each_element in self.element:
+        for each_element in self.elements:
             if type(each_element) == int:
                 result += bytes([each_element])
             else:
@@ -196,9 +207,9 @@ class Script:
         '''index isn't used for p2pkh, for p2sh, means one of m sigs'''
         sig_type = self.type()
         if sig_type == 'p2pkh sig':
-            return self.element[0]
+            return self.elements[0]
         elif sig_type == 'p2sh sig':
-            return self.element[index + 1]
+            return self.elements[index + 1]
         else:
             raise RuntimeError('script type needs to be p2pkh sig or p2sh sig')
 
@@ -206,11 +217,11 @@ class Script:
         '''index isn't used for p2pkh, for p2sh, means one of n pubkeys'''
         sig_type = self.type()
         if sig_type == 'p2pkh sig':
-            return self.element[1]
+            return self.elements[1]
         elif sig_type == 'p2sh sig':
             # HACK: assumes p2sh is a multisig
-            redeem_script = Script.parse(self.element[-1])
-            return redeem_script.element[index + 1]
+            redeem_script = Script.parse(self.elements[-1])
+            return redeem_script.elements[index + 1]
 
 
 class ScriptTest(TestCase):

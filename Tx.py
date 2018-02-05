@@ -5,11 +5,12 @@ from helper import little_endian_to_int, read_varint, satoshi_to_bitcoin, int_to
 from Signature import Signature
 from Script import Script
 from S256Point import S256Point
+from blockchain_explorer_helper import BlockchainExplorer
 import requests
 
 
 class Tx:
-    def __init__(self, version, tx_ins, tx_outs, locktime, testnet=False):
+    def __init__(self, version, tx_ins, tx_outs, locktime, testnet=True):
         self.version = version
         self.tx_ins = tx_ins
         self.tx_outs = tx_outs
@@ -86,6 +87,7 @@ class Tx:
         # iterate over self.tx_ins
         for tx_in in self.tx_ins:
             # create a new TxIn that has a blank script_sig (b'') and add to alt_tx_ins
+            print(hexlify(tx_in.prev_hash))
             alt_tx_ins.append(TxIn(
                 prev_hash=tx_in.prev_hash,
                 prev_index=tx_in.prev_index,
@@ -98,7 +100,18 @@ class Tx:
 
         # grab the script_pubkey of the input
         script_pubkey = signing_input.script_pubkey(self.testnet)
-        signing_input.script_sig = script_pubkey  # Exercise 6.2 REPLACE THIS LINE!!!
+        print("Script pubkey: {}".format(script_pubkey))
+
+        # Check the sig type
+        sig_type = script_pubkey.type()
+        if sig_type == 'p2pkh':
+            signing_input.script_sig = script_pubkey
+        elif sig_type == 'p2sh':
+            current_input = self.tx_ins[input_index]
+            signing_input.script_sig = Script.parse(
+                current_input.redeem_script())
+        else:
+            raise RuntimeError('no valid sig_type')
 
         # create an alternate transaction with the modified tx_ins
         alt_tx = self.__class__(
@@ -183,15 +196,16 @@ class TxIn:
         return result
 
     @classmethod
-    def get_url(self, testnet=False):
+    def get_url(self, testnet=True):
         if testnet:
             return 'https://testnet.blockexplorer.com/api'
         else:
             return 'https://btc-bitcore3.trezor.io/api'
 
-    def fetch_tx(self, testnet=False):
+    def fetch_tx(self, testnet=True):
         if self.prev_hash not in self.cache:
             url = self.get_url(testnet) + '/rawtx/{}'.format(hexlify(self.prev_hash).decode('ascii'))
+            print(url)
             response = requests.get(url)
 
             js_response = response.json()
@@ -205,7 +219,7 @@ class TxIn:
 
         return self.cache[self.prev_hash]
 
-    def value(self, testnet=False):
+    def value(self, testnet=True):
         tx = self.fetch_tx()
 
         return tx.tx_outs[self.prev_index].amount
@@ -220,7 +234,7 @@ class TxIn:
     def sec_pubkey(self, index=0):
         return self.script_sig.sec_pubkey(index=index)
 
-    def script_pubkey(self, testnet=False):
+    def script_pubkey(self, testnet=True):
         '''Get the scriptPubKey by looking up the tx hash on libbitcoin server
         Returns the binary scriptpubkey
         '''
@@ -228,6 +242,7 @@ class TxIn:
         tx = self.fetch_tx(testnet=testnet)
         # get the output at self.prev_index
         # return the script_pubkey property and serialize
+        print("Prev script_pub_key: {}".format(tx.tx_outs[self.prev_index].script_pub_key))
         return tx.tx_outs[self.prev_index].script_pub_key
 
 
