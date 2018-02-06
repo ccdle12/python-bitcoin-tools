@@ -21,18 +21,18 @@ from blockchain_explorer_helper import BlockchainExplorerTest
 # helper.run_test(FieldElementTest('test_powers'))
 # helper.run_test(FieldElementTest('test_division'))
 # helper.run_test(FieldElementTest('test_rmul'))
-
-
-# # # # # # # # # # # # # # # # # # # #
-#  Point Tests                        #
-# # # # # # # # # # # # # # # # # # # #
+#
+#
+# # # # # # # # # # # # # # # # # # # # #
+# #  Point Tests                        #
+# # # # # # # # # # # # # # # # # # # # #
 # helper.run_test(PointTest('test_points_on_curve'))
 # helper.run_test(PointTest('test_rmul'))
 
 
 # # # # # # # # # # # # # # # # # # # #
 #  S256 Point Tests                   #
-# # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # #
 # helper.run_test(S256Test('test_point_at_infinity'))
 # helper.run_test(S256Test('test_generating_pub_key'))
 # helper.run_test(S256Test('test_pubpoint'))
@@ -40,11 +40,11 @@ from blockchain_explorer_helper import BlockchainExplorerTest
 # helper.run_test(S256Test('test_generate_address'))
 
 
-#//TODO: RENAME ECC_TESTS TO ECCTest
-# # # # # # # # # # # # # # # # # # # #
-#  ECC Tests                          #
-# # # # # # # # # # # # # # # # # # # #
-
+# #//TODO: RENAME ECC_TESTS TO ECCTest
+# # # # # # # # # # # # # # # # # # # # #
+# #  ECC Tests                          #
+# # # # # # # # # # # # # # # # # # # # #
+#
 # helper.run_test(ECC_Tests('test_P'))
 # helper.run_test(ECC_Tests('test_generate_priv_key'))
 # # # # Takes 9 - 10 seconds
@@ -53,54 +53,54 @@ from blockchain_explorer_helper import BlockchainExplorerTest
 # helper.run_test(ECC_Tests('test_point_at_infinity'))
 # helper.run_test(ECC_Tests('test_pub_key_is_on_curve'))
 # helper.run_test(ECC_Tests('test_pub_key_is_not_on_curve'))
-
-
-# # # # # # # # # # # # # # # # # # # # #
-#  Signature Test                       #
-# # # # # # # # # # # # # # # # # # # # #
-# helper.run_test(SignatureTest('test_generating_signature'))
-
-
+#
+#
 # # # # # # # # # # # # # # # # # # # # # #
-#  Private Key Test                       #
+# #  Signature Test                       #
 # # # # # # # # # # # # # # # # # # # # # #
+helper.run_test(SignatureTest('test_generating_signature'))
+#
+#
+# # # # # # # # # # # # # # # # # # # # # # #
+# #  Private Key Test                       #
+# # # # # # # # # # # # # # # # # # # # # # #
 # helper.run_test(PrivateKeyTest('test_init_PrivateKey'))
 # # # Takes 9 - 10 seconds
-# helper.run_test(PrivateKeyTest('test_duplicate_priv_key'))
+# # helper.run_test(PrivateKeyTest('test_duplicate_priv_key'))
 # helper.run_test(PrivateKeyTest('test_gen_pub_key'))
 # helper.run_test(PrivateKeyTest('test_wallet_import_format'))
-
-# # # # # # # # # # # # # # # # # # # # # # # #
-#  Script Test                                #
-# # # # # # # # # # # # # # # # # # # # # # # #
+#
+# # # # # # # # # # # # # # # # # # # # # # # # #
+# #  Script Test                                #
+# # # # # # # # # # # # # # # # # # # # # # # # #
 # helper.run_test(ScriptTest('test_script_type'))
-
-# # # # # # # # # # # # # # # # # # # # # #
-#  Tx Test                                #
-# # # # # # # # # # # # # # # # # # # # # #
+#
+# # # # # # # # # # # # # # # # # # # # # # #
+# #  Tx Test                                #
+# # # # # # # # # # # # # # # # # # # # # # #
 # helper.run_test(TxTest('test_parse_transaction'))
 # helper.run_test(TxTest('test_serialization'))
 # helper.run_test(TxTest('test_fee_calculation'))
 # helper.run_test(TxTest('test_sig_hash'))
 # helper.run_test(TxTest('test_validate_input_signature'))
-
-
-# # # # # # # # # # # # # # # # # # # # # #
-#  Helper Test                            #
-# # # # # # # # # # # # # # # # # # # # # #
+#
+#
+# # # # # # # # # # # # # # # # # # # # # # #
+# #  Helper Test                            #
+# # # # # # # # # # # # # # # # # # # # # # #
 # helper.run_test(HelperTest('test_decode_base58'))
 # helper.run_test(HelperTest('test_bitcoin_to_satoshi'))
-
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#  Blockchain Explorer Test  - HTTP Requests            #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# #  Blockchain Explorer Test  - HTTP Requests            #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # helper.run_test(BlockchainExplorerTest('test_request_to_block_cypher'))
 
 # # # # # # # # # # # # # # # # # # # # # #
 #  Wallet Test                            #
 # # # # # # # # # # # # # # # # # # # # # #
-helper.run_test(MainTest('test_private_key_generated'))
+# helper.run_test(MainTest('test_private_key_generated'))
 # helper.run_test(MainTest('test_p2pkh_generation'))
 
 

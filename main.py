@@ -3,7 +3,7 @@ from binascii import unhexlify, hexlify
 from Tx import TxIn, TxOut, Tx
 from Script import Script
 from helper import decode_base58, p2pkh_script, bitcoin_to_satoshi, SIGHASH_ALL
-import blockchain_explorer_helper
+import blockchain_explorer_helper as BlockExplorer
 import PrivateKey
 
 
@@ -32,8 +32,7 @@ class Main:
 
     def generate_p2pkh_pub_key(self, address):
         h160 = decode_base58(address)
-        # print("Decoded Address: {}".format(hexlify(h160)))
-        # print("Script: {}".format(hexlify(p2pkh_script(h160))))
+
         return p2pkh_script(h160)
 
     def send_transaction(self, prev_tx, prev_index, target_addr, amount, change_amount):
@@ -56,9 +55,7 @@ class Main:
         target_output_p2pkh = self.generate_p2pkh_pub_key(target_addr)
 
         # Convert the target output amount to satoshis
-        print("OUTPUT Amount: {}".format(amount))
         output_amount_in_satoshis = bitcoin_to_satoshi(amount)
-        print("OUTPUT Amount in Satoshis: {}".format(output_amount_in_satoshis))
 
         # Create the TX OUTPUT, pass in the amount and the LOCKING SCRIPT
         tx_outputs.append(TxOut
@@ -71,9 +68,7 @@ class Main:
         change_output_p2pkh = self.generate_p2pkh_pub_key(self.get_address(mainnet=False))
 
         # Convert the change amount output to satoshis
-        print("OUTPUT change amount: {}".format(change_amount))
         change_amount_in_satoshis = bitcoin_to_satoshi(change_amount)
-        print("OUTPUT change amount in satoshis: {}".format(change_amount_in_satoshis))
 
         # Create a tx output for the change transaction
         tx_outputs.append(TxOut
@@ -109,10 +104,10 @@ class Main:
         transaction.tx_ins[0].script_sig = unlocking_script
 
         # Create a block explorer instance and serialize transaction
-        block_explorer = blockchain_explorer_helper.BlockchainExplorer()
+
         raw_tx = hexlify(transaction.serialize()).decode('ascii')
 
-        return block_explorer.send_tx(raw_tx)
+        return BlockExplorer.send_tx(raw_tx)
 
 
 class MainTest(TestCase):

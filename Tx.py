@@ -5,7 +5,6 @@ from helper import little_endian_to_int, read_varint, satoshi_to_bitcoin, int_to
 from Signature import Signature
 from Script import Script
 from S256Point import S256Point
-from blockchain_explorer_helper import BlockchainExplorer
 import requests
 
 

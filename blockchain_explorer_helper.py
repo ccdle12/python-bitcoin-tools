@@ -2,87 +2,82 @@ from unittest import TestCase
 import json
 import requests
 
-
-class BlockchainExplorer:
-    def __init__(self):
-        self.blockchain_cypher_url = "https://api.blockcypher.com/v1/btc/test3"
-        self.token_url = "?token=5757068b376143b8aa5f7fc137dc2351"
-
-    def ping(self):
-        return requests.get(self.blockchain_cypher_url)
-
-    def get_balance(self, address):
-        balance_url = "/addrs/{}/balance".format(address)
-        response = requests.get(self.blockchain_cypher_url + balance_url)
-
-        if response.status_code != 200:
-            raise RuntimeError("The server returned an error: {}".format(response.json()))
-
-        return response
-
-    def send_tx(self, raw_tx):
-        send_tx_url = "/txs/push"
-
-        json_tx = self.create_json_tx(raw_tx)
-
-        response = requests.post(self.blockchain_cypher_url + send_tx_url + self.token_url, data=json_tx)
-
-        print(response.json())
-
-        if response.status_code == 400:
-            raise RuntimeError("Error sending the tx: {}".format(response.json()))
-
-        return response
-
-    def get_transaction(self, transaction_hash):
-        get_tx_url = "/txs/{}".format(transaction_hash)
-
-        response = requests.get(self.blockchain_cypher_url + get_tx_url)
-
-        return response
-
-    def decode_transaction(self, raw_tx):
-        decode_tx_url = "/txs/decode"
-
-        json_tx = self.create_json_tx(raw_tx)
-
-        # print(self.blockchain_cypher_url + decode_tx_url + self.token_url)
-        response = requests.post(self.blockchain_cypher_url + decode_tx_url + self.token_url, data=json_tx)
-
-        print(response)
-
-        return response
-
-    def create_json_tx(self, raw_tx):
-        tx_object = {"tx": raw_tx}
-        return json.dumps(tx_object)
+blockchain_cypher_url = "https://api.blockcypher.com/v1/btc/test3"
+token_url = "?token=5757068b376143b8aa5f7fc137dc2351"
 
 
+def ping():
+    return requests.get(blockchain_cypher_url)
 
+
+def get_balance(address):
+    balance_url = "/addrs/{}/balance".format(address)
+    response = requests.get(blockchain_cypher_url + balance_url)
+
+    if response.status_code != 200:
+        raise RuntimeError("The server returned an error: {}".format(response.json()))
+
+    return response
+
+
+def send_tx(raw_tx):
+    send_tx_url = "/txs/push"
+
+    json_tx = create_json_tx(raw_tx)
+
+    response = requests.post(blockchain_cypher_url + send_tx_url + token_url, data=json_tx)
+
+    if response.status_code == 400:
+        raise RuntimeError("Error sending the tx: {}".format(response.json()))
+
+    return response
+
+
+def get_transaction(transaction_hash):
+    get_tx_url = "/txs/{}".format(transaction_hash)
+
+    response = requests.get(blockchain_cypher_url + get_tx_url)
+
+    return response
+
+
+def decode_transaction(raw_tx):
+    decode_tx_url = "/txs/decode"
+
+    json_tx = create_json_tx(raw_tx)
+
+    response = requests.post(blockchain_cypher_url + decode_tx_url + token_url, data=json_tx)
+
+    return response
+
+
+def create_json_tx(raw_tx):
+    tx_object = {"tx": raw_tx}
+    return json.dumps(tx_object)
 
 
 class BlockchainExplorerTest(TestCase):
     def test_request_to_block_cypher(self):
         print("Block cypher returns 200 and name of chain")
         expected = "BTC.test3"
-        self.assertEqual(expected, BlockchainExplorer().ping().json()["name"])
+        self.assertEqual(expected, ping().json()["name"])
 
         print("--------------------------------------------------------------")
         print("Should make request for the balance of the address passed")
         expected = 200
-        self.assertEqual(expected, BlockchainExplorer().get_balance("mfke2PVhGePAy1GfZNotr6LeXfQ5nwnZTa").status_code)
+        self.assertEqual(expected, get_balance("mfke2PVhGePAy1GfZNotr6LeXfQ5nwnZTa").status_code)
 
         print("--------------------------------------------------------------")
         print("Should return an error since we haven't passed a valid address")
 
         with self.assertRaises(RuntimeError):
-            BlockchainExplorer().get_balance("m2PVhGePAy1GfZNotr6LeXfQ5nw")
+            get_balance("m2PVhGePAy1GfZNotr6LeXfQ5nw")
 
         print("--------------------------------------------------------------")
         print("Should make request for the balance of the address passed")
-        expected = "fea5cbf4efc220a5512d394279778f75937c253cac32c43047cadffc9ee4d85c"
-        tx = BlockchainExplorer().get_transaction("fea5cbf4efc220a5512d394279778f75937c253cac32c43047cadffc9ee4d85c")
-        print(tx.json())
+        expected = 200
+        tx = get_transaction(
+            "fea5cbf4efc220a5512d394279778f75937c253cac32c43047cadffc9ee4d85c").status_code
         self.assertEqual(expected, tx)
 
         # print("--------------------------------------------------------------")
@@ -92,5 +87,3 @@ class BlockchainExplorerTest(TestCase):
         # expected = 'mfke2PVhGePAy1GfZNotr6LeXfQ5nwnZTa'
         # print(response)
         # self.assertEqual(expected, response['addresses'][1])
-
-

@@ -42,7 +42,7 @@ class PrivateKey:
         return cls(secret)
 
     def sign(self, z):
-        # Rand int
+
         k = randint(0,  2**256)
         r = (k * G).x.num
 

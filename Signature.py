@@ -1,8 +1,6 @@
 from unittest import TestCase
-import ecc
-from S256Point import N, G
 from io import BytesIO
-from binascii import hexlify
+from binascii import hexlify, unhexlify
 
 
 class Signature:
@@ -21,6 +19,7 @@ class Signature:
         s = BytesIO(signature_bin)
 
         compound = s.read(1)[0]
+        print("Compound: {}".format(compound))
 
         if compound != 0x30:
             raise RuntimeError("Bad Signature")
@@ -41,15 +40,19 @@ class Signature:
 
         slength = s.read(1)[0]
         s = int(hexlify(s.read(slength)), 16)
+
+        # if the length of the signature is into equal to the 6 byte markers, plus r and s, then sig is too long
         if len(signature_bin) != 6 + rlength + slength:
             raise RuntimeError("Signature too long")
 
         return cls(r, s)
 
     def der(self):
+        # Return r, s in Der Format (serializing)
         rbin = self.r.to_bytes(32, byteorder='big')
 
         # if rbin has a high bit, add a 00
+        print("RBIN: {}".format(rbin[0]))
         if rbin[0] > 128:
             rbin = b'\x00' + rbin
 
@@ -66,52 +69,36 @@ class Signature:
 
 class SignatureTest(TestCase):
     def test_generating_signature(self):
-        print("------------------------------------------------")
-        priv_key = ecc.ECC().generate_priv_key()
-        pub_key = ecc.ECC().generate_pub_key(priv_key)
-        signature = ecc.ECC().generate_signature(priv_key)
+        print("--------------------------------------------------------------")
+        print("Should pass as valid Signature object, test will assert sig IS NOT NONE")
 
-        print("------------------------------------------------")
-        print("Should assert r, s as NOT none")
-        self.assertIsNotNone(signature.s)
-        self.assertIsNotNone(signature.r)
-        # # self.assertIsNotNone(signature.sig)
-        #
-        # print("------------------------------------------------")
-        # print("Should verify signature as True")
-        # self.assertTrue(signature.verify(pub_key))
-        #
-        # print("------------------------------------------------")
-        # print("Should verify signature as False, since we are trying to verify signature 2 with the first pub_key")
-        # priv_key2 = ecc.ECC().generate_priv_key()
-        # signature2 = ecc.ECC().generate_signature(priv_key2)
-        #
-        # self.assertFalse(signature2.verify(pub_key))
-        #
-        # print("------------------------------------------------")
-        # print("Should verify signature as True, since we are using signature 2 and pub_key2")
-        # priv_key2 = ecc.ECC().generate_priv_key()
-        # pub_key2 = ecc.ECC().generate_pub_key(priv_key2)
-        # signature2 = ecc.ECC().generate_signature(priv_key2)
-        #
-        # self.assertTrue(signature2.verify(pub_key2))
-        #
-        # print("------------------------------------------------")
-        # print("Should verify signature as False, since we are using signature 2 and pub_key3")
-        # priv_key3 = ecc.ECC().generate_priv_key()
-        # pub_key3 = ecc.ECC().generate_pub_key(priv_key3)
-        # signature3 = ecc.ECC().generate_signature(priv_key2)
-        #
-        # self.assertFalse(signature2.verify(pub_key3))
-        #
-        # print("------------------------------------------------")
-        # print("Should verify signature as True, since we are using signature 4 and pub_key4")
-        # priv_key4 = ecc.ECC().generate_priv_key()
-        # pub_key4 = ecc.ECC().generate_pub_key(priv_key4)
-        # signature4 = ecc.ECC().generate_signature(priv_key4)
-        #
-        # self.assertTrue(signature4.verify(pub_key4))
-        #
-        # print("------------------------------------------------")
-        # print("Should verify signature as False, since we are using signature 4 and pub_key1")
-        # self.assertFalse(signature4.verify(pub_key))
+        r = 65768643913645672968978426589689987237850374542483501912088659345491159391021
+        s = 55618899300744280687710599871980893657541124572884031214465422719409044157728
+        sig = Signature(r, s)
+
+        self.assertIsNotNone(sig)
+        self.assertEqual(sig.r, r)
+
+        print("--------------------------------------------------------------")
+        print("Should pass and return valid DER signature")
+
+        expected = "30450221009167bbb944c67d650cab2f3d5cbd06c2391977de478832c50d4af00b0a2f9b2d02207af72e71cecf43022204cce257af9625f799d5a90ed904c42b903771dd217520"
+        self.assertEqual(expected, hexlify(sig.der()).decode('ascii'))
+
+
+        print("--------------------------------------------------------------")
+        print("Should raise error length of signature is too short")
+
+        with self.assertRaises(RuntimeError):
+            sig = Signature.parse(unhexlify(
+                "30450221009167bbb944c67d650cab2f3d5cbd06c2391977de478832c50d4af00b0a2f9b2d02207af72e71cecf43022204cce257af9625f799d5a90ed904c42b903771dd2175"))
+
+        print("--------------------------------------------------------------")
+        print("Should return bad signature")
+
+        with self.assertRaises(RuntimeError):
+            sig = Signature.parse(unhexlify(
+                "20450221009167bbb944c67d650cab2f3d5cbd06c2391977de478832c50d4af00b0a2f9b2d02207af72e71cecf43022204cce257af9625f799d5a90ed904c42b903771dd2175"))
+
+
+        sig.der()
