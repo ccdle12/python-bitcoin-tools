@@ -1,7 +1,7 @@
 from unittest import TestCase
 from io import BytesIO
 from binascii import unhexlify, hexlify
-from helper import little_endian_to_int, read_varint, satoshi_to_bitcoin, int_to_little_endian, encode_varint, double_sha256, SIGHASH_ALL
+from helper import little_endian_to_int, read_varint, satoshi_to_bitcoin, int_to_little_endian, encode_varint, double_sha256, SIGHASH_ALL, decode_base58
 from Signature import Signature
 from Script import Script
 from S256Point import S256Point
@@ -21,9 +21,11 @@ class Tx:
         tx_ins = ''
         for tx_in in self.tx_ins:
             tx_ins += tx_in.__repr__() + '\n'
+
         tx_outs = ''
         for tx_out in self.tx_outs:
             tx_outs += tx_out.__repr__() + '\n'
+
         return 'version: {}\ntx_ins:\n{}\ntx_outs:\n{}\nlocktime: {}\n'.format(
             self.version,
             tx_ins,
@@ -112,14 +114,15 @@ class Tx:
         # grab the input at the input_index
         # "1b562bc7c059af8a61bec721bae5c8f47d929389049b38525045e6330ac7acf2:1"
         signing_input = alt_tx_ins[input_index]
-        print("SIGNING INPUT: {}".format(signing_input))
+        # print("SIGNING INPUT: {}".format(signing_input))
 
         # grab the script_pubkey of the input
         script_pubkey = signing_input.script_pubkey(self.testnet)
-        print("Script pubkey: {}".format(script_pubkey))
+        # print("Script pubkey: {}".format(script_pubkey))
 
         # Check the sig type
         sig_type = script_pubkey.type()
+
         if sig_type == 'p2pkh':
             signing_input.script_sig = script_pubkey
         elif sig_type == 'p2sh':
@@ -257,15 +260,16 @@ class TxIn:
         return self.script_sig.sec_pubkey(index=index)
 
     def script_pubkey(self, testnet=True):
-        '''Get the scriptPubKey by looking up the tx hash on libbitcoin server
+        '''Get the scriptPubKey by looking up the tx hash on block explorer server
         Returns the binary scriptpubkey
         '''
         # use self.fetch_tx to get the transaction
         tx = self.fetch_tx(testnet=testnet)
-        print("Tx fetched in script_pubkey: {}".format(tx))
+        # print("Tx fetched in script_pubkey: {}".format(tx))
         # get the output at self.prev_index
-        # return the script_pubkey property and serialize
-        # print("Prev script_pub_key: {}".format(tx.tx_outs[self.prev_index].script_pub_key))
+        # print("Hashed Address should match: {}".format(hexlify(decode_base58("mwM7hxtkequUMuTJATjHisfp6VACgNgcfv"))))
+        # print("Script Pubkey: {}".format(tx.tx_outs[self.prev_index].script_pub_key))
+
         return tx.tx_outs[self.prev_index].script_pub_key
 
 

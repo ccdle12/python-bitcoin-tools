@@ -124,8 +124,9 @@ OP_CODES = {
 
 
 class Script:
-    def __init__(self, element):
-        self.elements = element
+    def __init__(self, elements):
+        print("Elements in Script obj: {}".format(elements))
+        self.elements = elements
 
     @classmethod
     def parse(cls, raw):
@@ -138,7 +139,7 @@ class Script:
         while current != b'':
             op_code = current[0]
 
-            if 0 < op_code <= 75:
+            if op_code > 0 and op_code <= 75:
                 elements.append(stream.read(op_code))
             else:
                 elements.append(op_code)
@@ -201,6 +202,7 @@ class Script:
             else:
                 result += bytes([len(each_element)]) + each_element
 
+        # print("Result of Script Sig Serialization: {}".format(hexlify(result)))
         return result
 
     def der_signature(self, index=0):
