@@ -114,7 +114,7 @@ class Tx:
         # grab the input at the input_index
         # "1b562bc7c059af8a61bec721bae5c8f47d929389049b38525045e6330ac7acf2:1"
         signing_input = alt_tx_ins[input_index]
-        # print("SIGNING INPUT: {}".format(signing_input))
+        print("SIGNING INPUT: {}".format(signing_input))
 
         # grab the script_pubkey of the input
         script_pubkey = signing_input.script_pubkey(self.testnet)
@@ -166,7 +166,7 @@ class Tx:
         # Parse the sec_pubkey to return x,y points
         point = S256Point.parse(sec)
 
-        # Use sig_has method on transaction to turn transactino into z
+        # Use sig_has method on transaction to turn transaction into z
         sig_hash = self.sig_hash(index_pos, hash_type)
 
         return point.verify(sig_hash, signature)
@@ -230,7 +230,7 @@ class TxIn:
     def fetch_tx(self, testnet=True):
         if self.prev_hash not in self.cache:
             url = self.get_url(testnet) + '/rawtx/{}'.format(hexlify(self.prev_hash).decode('ascii'))
-            # print(url)
+            print(url)
             response = requests.get(url)
 
             if response.status_code == 404:
@@ -258,6 +258,7 @@ class TxIn:
     def der_signature(self, index=0):
 
         signature = self.script_sig.der_signature(index=index)
+        print("Signature in der_signature: {}".format(hexlify(signature)))
 
         # last byte is the hash_type, rest is the signature
         return signature[:-1], signature[-1]
@@ -267,7 +268,7 @@ class TxIn:
 
     def script_pubkey(self, testnet=True):
         '''Get the scriptPubKey by looking up the tx hash on block explorer server
-        Returns the binary scriptpubkey
+        Returns the binary scriptpubkey (LOCKING SCRIPT)
         '''
         # use self.fetch_tx to get the transaction
         tx = self.fetch_tx(testnet=testnet)
@@ -371,7 +372,7 @@ class TxTest(TestCase):
 
     def test_validate_input_signature(self):
         print("Should return true for validating the signature of 0 index input")
-        hex_tx = unhexlify('01000000012f5ab4d2666744a44864a63162060c2ae36ab0a2375b1c2b6b43077ed5dcbed6000000006a473044022034177d53fcb8e8cba62432c5f6cc3d11c16df1db0bce20b874cfc61128b529e1022040c2681a2845f5eb0c46adb89585604f7bf8397b82db3517afb63f8e3d609c990121035e8b10b675477614809f3dde7fd0e33fb898af6d86f51a65a54c838fddd417a5feffffff02c5872e00000000001976a91441b835c78fb1406305727d8925ff315d90f9bbc588acae2e1700000000001976a914c300e84d277c6c7bcf17190ebc4e7744609f8b0c88ac31470600')
+        hex_tx = unhexlify('010000000199ab3f377992df2ccad0af99dc846af032fbd982f916d72715d2eb0f2828342d010000006b483045022100ac3e55420a7b9897f0da43ff7a076895d0ead13fda49926041124aca00c5d6070220245aaefc7047563e42baa350cc7424efcb03ef7e70e596c28b5eca7223fa663f01210275bdc1759e7ffb5fb1f07655d5572cec8219b28250acdbc7f936396884d196f2ffffffff0280841e00000000001976a914029692862d60b5f84ba706b37939d074b6c5808588acc0fb3900000000001976a914ada5b5ba34eb8774388d0ac30c5bc3c8e8afae0388ac00000000')
         index = 0
 
         tx = Tx.parse(hex_tx)

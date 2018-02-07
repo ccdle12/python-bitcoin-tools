@@ -210,21 +210,24 @@ class Script:
 
         return result
 
-    # def der_signature(self, index=0):
-    #     '''index isn't used for p2pkh, for p2sh, means one of m sigs'''
-    #     sig_type = self.type()
-    #     print("Sig type: {}".format(sig_type))
-    #     if sig_type == 'p2pkh sig':
-    #         return self.elements[0]
-    #     elif sig_type == 'p2sh sig':
-    #         return self.elements[index + 1]
-    #     else:
-    #         raise RuntimeError('script type needs to be p2pkh sig or p2sh sig')
+    def der_signature(self, index=0):
+        '''index isn't used for p2pkh, for p2sh, means one of m sigs'''
+        sig_type = self.type()
+        print("Sig type: {}".format(sig_type))
+        if sig_type == 'p2pkh sig':
+            return self.elements[0]
+        elif sig_type == 'p2sh sig':
+            return self.elements[index + 1]
+        else:
+            raise RuntimeError('script type needs to be p2pkh sig or p2sh sig')
 
     def sec_pubkey(self, index=0):
         '''index isn't used for p2pkh, for p2sh, means one of n pubkeys'''
         sig_type = self.type()
+        print("Sig_type: {}".format(sig_type))
         if sig_type == 'p2pkh sig':
+            # Returns the Pub Key (A SEC public key)
+            print(hexlify(self.elements[1]))
             return self.elements[1]
         elif sig_type == 'p2sh sig':
             # HACK: assumes p2sh is a multisig

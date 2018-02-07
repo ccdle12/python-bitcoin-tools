@@ -19,7 +19,6 @@ class Signature:
         s = BytesIO(signature_bin)
 
         compound = s.read(1)[0]
-        print("Compound: {}".format(compound))
 
         if compound != 0x30:
             raise RuntimeError("Bad Signature")

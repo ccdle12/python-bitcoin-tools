@@ -83,7 +83,7 @@ helper.run_test(ScriptTest('test_script_type'))
 # helper.run_test(TxTest('test_serialization'))
 helper.run_test(TxTest('test_fee_calculation'))
 helper.run_test(TxTest('test_sig_hash'))
-# helper.run_test(TxTest('test_validate_input_signature'))
+helper.run_test(TxTest('test_validate_input_signature'))
 
 
 # # # # # # # # # # # # # # # # # # # # # # #
