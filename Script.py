@@ -125,7 +125,6 @@ OP_CODES = {
 
 class Script:
     def __init__(self, elements):
-        print("Elements in Script obj: {}".format(elements))
         self.elements = elements
 
     @classmethod
@@ -137,9 +136,12 @@ class Script:
         current = stream.read(1)
 
         while current != b'':
+            # Read the int representation of the byte
             op_code = current[0]
 
-            if op_code > 0 and op_code <= 75:
+            if 0 < op_code <= 75:
+                # Read the next set of bytes as the length of the op_code
+                # which should be the length of the pub key hash and add it to the list
                 elements.append(stream.read(op_code))
             else:
                 elements.append(op_code)
@@ -195,14 +197,14 @@ class Script:
 
     def serialize(self):
         result = b''
-
         for each_element in self.elements:
+            # if element is an int, it's an OP_CODEgit
             if type(each_element) == int:
                 result += bytes([each_element])
             else:
+                # Element is the hash160 of the sec pub key, prefix it with the length of bytes and then the h160
                 result += bytes([len(each_element)]) + each_element
 
-        # print("Result of Script Sig Serialization: {}".format(hexlify(result)))
         return result
 
     def der_signature(self, index=0):
@@ -231,6 +233,7 @@ class ScriptTest(TestCase):
         print("Should return type p2pkh (pay to pub key hash)")
         # script_pubkey = <76 : OP_DUP> <a9 : OP_HASH160> <14 : Length of hash> <88 : OP_EQUAL_VERIFY> <ac : OP_CHECKSIG>
         script_pubkey_raw = unhexlify('76a914bc3b654dca7e56b04dca18f2566cdaf02e8d9ada88ac')
+        print("Raw bytes pub key: {}".format(script_pubkey_raw))
         script_pubkey = Script.parse(script_pubkey_raw)
         self.assertEqual('p2pkh', script_pubkey.type())
 
@@ -239,5 +242,11 @@ class ScriptTest(TestCase):
         script_pubkey_raw = unhexlify('a91474d691da1574e6b3c192ecfb52cc8984ee7b6c5687')
         script_pubkey = Script.parse(script_pubkey_raw)
         self.assertEqual('p2sh', script_pubkey.type())
+
+        print("Should serialize the script and return the bytes in the pattern below")
+        # script_pubkey = <a9 : OP_HASH16-> <14 : Length of hash> < hash > <87 : OP_EQUAL>
+
+        result = hexlify(script_pubkey.serialize())
+        self.assertEqual(b'a91474d691da1574e6b3c192ecfb52cc8984ee7b6c5687', result)
 
 

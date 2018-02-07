@@ -52,7 +52,6 @@ class Signature:
         rbin = self.r.to_bytes(32, byteorder='big')
 
         # if rbin has a high bit, add a 00
-        print("RBIN: {}".format(rbin[0]))
         if rbin[0] > 128:
             rbin = b'\x00' + rbin
 

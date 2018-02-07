@@ -58,9 +58,9 @@ from blockchain_explorer_helper import BlockchainExplorerTest
 # # # # # # # # # # # # # # # # # # # # # #
 # #  Signature Test                       #
 # # # # # # # # # # # # # # # # # # # # # #
-helper.run_test(SignatureTest('test_generating_signature'))
-#
-#
+# helper.run_test(SignatureTest('test_generating_signature'))
+
+
 # # # # # # # # # # # # # # # # # # # # # # #
 # #  Private Key Test                       #
 # # # # # # # # # # # # # # # # # # # # # # #
@@ -69,12 +69,12 @@ helper.run_test(SignatureTest('test_generating_signature'))
 # # helper.run_test(PrivateKeyTest('test_duplicate_priv_key'))
 # helper.run_test(PrivateKeyTest('test_gen_pub_key'))
 # helper.run_test(PrivateKeyTest('test_wallet_import_format'))
-#
+
 # # # # # # # # # # # # # # # # # # # # # # # # #
 # #  Script Test                                #
 # # # # # # # # # # # # # # # # # # # # # # # # #
-# helper.run_test(ScriptTest('test_script_type'))
-#
+helper.run_test(ScriptTest('test_script_type'))
+
 # # # # # # # # # # # # # # # # # # # # # # #
 # #  Tx Test                                #
 # # # # # # # # # # # # # # # # # # # # # # #
