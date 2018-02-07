@@ -228,22 +228,19 @@ class TxIn:
         else:
             return 'https://btc-bitcore3.trezor.io/api'
 
+    # Fetches Raw TX of the input and creates a Tx Object
     def fetch_tx(self, testnet=True):
         if self.prev_hash not in self.cache:
             url = self.get_url(testnet) + '/rawtx/{}'.format(hexlify(self.prev_hash).decode('ascii'))
-            print(url)
             response = requests.get(url)
 
             if response.status_code == 404:
-                raise RuntimeError("404 error received")
-
-            print(response.headers)
-            print(response.status_code)
+                raise RuntimeError("404 error received, usually a bad prex_tx hash")
 
             js_response = response.json()
 
             if 'rawtx' not in js_response:
-                raise RuntimeError('Did not receive expected response: {0}'.format(js_response))
+                raise RuntimeError('Did not receive expected response: {}'.format(js_response))
 
             raw = unhexlify(js_response['rawtx'])
             tx = Tx.parse(raw)
@@ -267,16 +264,12 @@ class TxIn:
     def sec_pubkey(self, index=0):
         return self.script_sig.sec_pubkey(index=index)
 
+    # Fetches the script_pub key of this tx input (LOCKING SCRIPT)
     def script_pubkey(self, testnet=True):
         '''Get the scriptPubKey by looking up the tx hash on block explorer server
         Returns the binary scriptpubkey (LOCKING SCRIPT)
         '''
-        # use self.fetch_tx to get the transaction
         tx = self.fetch_tx(testnet=testnet)
-        # print("Tx fetched in script_pubkey: {}".format(tx))
-        # get the output at self.prev_index
-        # print("Hashed Address should match: {}".format(hexlify(decode_base58("mwM7hxtkequUMuTJATjHisfp6VACgNgcfv"))))
-        # print("Script Pubkey: {}".format(tx.tx_outs[self.prev_index].script_pub_key))
 
         return tx.tx_outs[self.prev_index].script_pub_key
 

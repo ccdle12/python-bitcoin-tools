@@ -104,7 +104,6 @@ class Main:
         transaction.tx_ins[0].script_sig = unlocking_script
 
         # Create a block explorer instance and serialize transaction
-
         raw_tx = hexlify(transaction.serialize()).decode('ascii')
 
         return BlockExplorer.send_tx(raw_tx)
@@ -155,17 +154,17 @@ class MainTest(TestCase):
         wallet2 = Main().import_private_key(
             53543775883506703906499148469479904297172220131041556152219913425601595776857)
 
-        response = wallet2.send_transaction(
-            prev_tx=unhexlify('1b562bc7c059af8a61bec721bae5c8f47d929389049b38525045e6330ac7acf2'),
-            prev_index=1,
-            target_addr=target_address,
-            amount=target_amount,
-            change_amount=change_amount)
 
         expected = "010000000199ab3f377992df2ccad0af99dc846af032fbd982f916d72715d2eb0f2828342d010000006b483045022100ac3e55420a7b9897f0da43ff7a076895d0ead13fda49926041124aca00c5d6070220245aaefc7047563e42baa350cc7424efcb03ef7e70e596c28b5eca7223fa663f01210275bdc1759e7ffb5fb1f07655d5572cec8219b28250acdbc7f936396884d196f2ffffffff0280841e00000000001976a914029692862d60b5f84ba706b37939d074b6c5808588acc0fb3900000000001976a914ada5b5ba34eb8774388d0ac30c5bc3c8e8afae0388ac00000000"
-        # print("RESPONSE: {}".format(response))
-        # print("EXPECTED: {}".format(expected))
-        self.assertEqual(expected, response)
+
+        print("Should raise run time error since the input used has been spent")
+        with self.assertRaises(RuntimeError):
+            response = wallet2.send_transaction(
+                prev_tx=unhexlify('1b562bc7c059af8a61bec721bae5c8f47d929389049b38525045e6330ac7acf2'),
+                prev_index=1,
+                target_addr=target_address,
+                amount=target_amount,
+                change_amount=change_amount)
 
     def test_p2pkh_generation(self):
         wallet = Main().import_private_key(

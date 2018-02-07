@@ -74,13 +74,12 @@ helper.run_test(PrivateKeyTest('test_wallet_import_format'))
 # #  Script Test                                #
 # # # # # # # # # # # # # # # # # # # # # # # # #
 helper.run_test(ScriptTest('test_script_type'))
-# helper.run_test(ScriptTest('test_der_sig'))
 
 # # # # # # # # # # # # # # # # # # # # # # #
 # #  Tx Test                                #
 # # # # # # # # # # # # # # # # # # # # # # #
-# helper.run_test(TxTest('test_parse_transaction'))
-# helper.run_test(TxTest('test_serialization'))
+helper.run_test(TxTest('test_parse_transaction'))
+helper.run_test(TxTest('test_serialization'))
 helper.run_test(TxTest('test_fee_calculation'))
 helper.run_test(TxTest('test_sig_hash'))
 helper.run_test(TxTest('test_validate_input_signature'))
@@ -89,20 +88,20 @@ helper.run_test(TxTest('test_validate_input_signature'))
 # # # # # # # # # # # # # # # # # # # # # # #
 # #  Helper Test                            #
 # # # # # # # # # # # # # # # # # # # # # # #
-# helper.run_test(HelperTest('test_decode_base58'))
-# helper.run_test(HelperTest('test_bitcoin_to_satoshi'))
-#
-#
+helper.run_test(HelperTest('test_decode_base58'))
+helper.run_test(HelperTest('test_bitcoin_to_satoshi'))
+
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # #  Blockchain Explorer Test  - HTTP Requests            #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# helper.run_test(BlockchainExplorerTest('test_request_to_block_cypher'))
+helper.run_test(BlockchainExplorerTest('test_request_to_block_cypher'))
 
 # # # # # # # # # # # # # # # # # # # # # #
 #  Wallet Test                            #
 # # # # # # # # # # # # # # # # # # # # # #
-# helper.run_test(MainTest('test_private_key_generated'))
-# helper.run_test(MainTest('test_p2pkh_generation'))
+helper.run_test(MainTest('test_private_key_generated'))
+helper.run_test(MainTest('test_p2pkh_generation'))
 
 
 
