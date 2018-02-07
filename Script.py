@@ -1,6 +1,9 @@
 from unittest import TestCase
 from binascii import unhexlify, hexlify
 from io import BytesIO
+from PrivateKey import PrivateKey
+from helper import decode_base58, p2pkh_script, SIGHASH_ALL
+import Tx
 
 OP_CODES = {
     0: 'OP_0',
@@ -163,21 +166,21 @@ class Script:
         if len(self.elements) == 0:
             return 'blank'
         elif self.elements[0] == 0x76 \
-             and self.elements[1] == 0xa9 \
-             and type(self.elements[2]) == bytes \
-             and len(self.elements[2]) == 0x14 \
-             and self.elements[3] == 0x88 \
-             and self.elements[4] == 0xac:
+                and self.elements[1] == 0xa9 \
+                and type(self.elements[2]) == bytes \
+                and len(self.elements[2]) == 0x14 \
+                and self.elements[3] == 0x88 \
+                and self.elements[4] == 0xac:
 
             # hex/int
             # script_pubkey = <76/118 : OP_DUP> <a9/169 : OP_HASH160> <14/20 : Length of hash> <88/136 : OP_EQUAL_VERIFY> <ac/172 : OP_CHECKSIG>
             return 'p2pkh'
         elif self.elements[0] == 0xa9 \
-            and type(self.elements[1]) is bytes\
-            and len(self.elements[1]) == 0x14 \
-            and self.elements[2] == 0x87:
+                and type(self.elements[1]) is bytes \
+                and len(self.elements[1]) == 0x14 \
+                and self.elements[2] == 0x87:
 
-            #<a9 : OP_HASH16-> <14 : Length of hash> < hash > <87 : OP_EQUAL>
+            # <a9 : OP_HASH16-> <14 : Length of hash> < hash > <87 : OP_EQUAL>
             return 'p2sh'
         elif type(self.elements[0]) == bytes \
                 and len(self.elements[0]) in (0x47, 0x48, 0x49) \
@@ -207,15 +210,16 @@ class Script:
 
         return result
 
-    def der_signature(self, index=0):
-        '''index isn't used for p2pkh, for p2sh, means one of m sigs'''
-        sig_type = self.type()
-        if sig_type == 'p2pkh sig':
-            return self.elements[0]
-        elif sig_type == 'p2sh sig':
-            return self.elements[index + 1]
-        else:
-            raise RuntimeError('script type needs to be p2pkh sig or p2sh sig')
+    # def der_signature(self, index=0):
+    #     '''index isn't used for p2pkh, for p2sh, means one of m sigs'''
+    #     sig_type = self.type()
+    #     print("Sig type: {}".format(sig_type))
+    #     if sig_type == 'p2pkh sig':
+    #         return self.elements[0]
+    #     elif sig_type == 'p2sh sig':
+    #         return self.elements[index + 1]
+    #     else:
+    #         raise RuntimeError('script type needs to be p2pkh sig or p2sh sig')
 
     def sec_pubkey(self, index=0):
         '''index isn't used for p2pkh, for p2sh, means one of n pubkeys'''
@@ -238,15 +242,13 @@ class ScriptTest(TestCase):
         self.assertEqual('p2pkh', script_pubkey.type())
 
         print("Should return type p2sh (pay to script hash)")
+        # p2sh script_pubkey
         # script_pubkey = <a9 : OP_HASH16-> <14 : Length of hash> < hash > <87 : OP_EQUAL>
         script_pubkey_raw = unhexlify('a91474d691da1574e6b3c192ecfb52cc8984ee7b6c5687')
         script_pubkey = Script.parse(script_pubkey_raw)
         self.assertEqual('p2sh', script_pubkey.type())
 
         print("Should serialize the script and return the bytes in the pattern below")
-        # script_pubkey = <a9 : OP_HASH16-> <14 : Length of hash> < hash > <87 : OP_EQUAL>
-
+        # p2sh script_pubkey
         result = hexlify(script_pubkey.serialize())
         self.assertEqual(b'a91474d691da1574e6b3c192ecfb52cc8984ee7b6c5687', result)
-
-
