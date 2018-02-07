@@ -169,6 +169,7 @@ class Tx:
         # Use sig_has method on transaction to turn transaction into z
         sig_hash = self.sig_hash(index_pos, hash_type)
 
+        # Verify both x co-ordinates are the same in signed hash and signature
         return point.verify(sig_hash, signature)
 
 
