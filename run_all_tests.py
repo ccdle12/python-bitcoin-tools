@@ -15,93 +15,95 @@ from blockchain_explorer_helper import BlockchainExplorerTest
 # # # # # # # # # # # # # # # # # # # # # #  #
 #  Field Element Test                        #
 # # # # # # # # # # # # # # # # # # # ## # # #
-helper.run_test(FieldElementTest('test_addition'))
-helper.run_test(FieldElementTest('test_subtraction'))
-helper.run_test(FieldElementTest('test_multiplication'))
-helper.run_test(FieldElementTest('test_powers'))
-helper.run_test(FieldElementTest('test_division'))
-helper.run_test(FieldElementTest('test_rmul'))
-#
-#
-# # # # # # # # # # # # # # # # # # # # #
-# #  Point Tests                        #
-# # # # # # # # # # # # # # # # # # # # #
-helper.run_test(PointTest('test_points_on_curve'))
-helper.run_test(PointTest('test_rmul'))
+# helper.run_test(FieldElementTest('test_addition'))
+# helper.run_test(FieldElementTest('test_subtraction'))
+# helper.run_test(FieldElementTest('test_multiplication'))
+# helper.run_test(FieldElementTest('test_powers'))
+# helper.run_test(FieldElementTest('test_division'))
+# helper.run_test(FieldElementTest('test_rmul'))
 
 
-# # # # # # # # # # # # # # # # # # # #
-#  S256 Point Tests                   #
-# # # # # # # # # # # # # # # # # # # # #
-helper.run_test(S256Test('test_point_at_infinity'))
-helper.run_test(S256Test('test_generating_pub_key'))
-helper.run_test(S256Test('test_pubpoint'))
-helper.run_test(S256Test('test_generate_sec_pub_key'))
-helper.run_test(S256Test('test_generate_address'))
+# # # # # # # # # # # # # # # # # # # # # #
+# # #  Point Tests                        #
+# # # # # # # # # # # # # # # # # # # # # #
+# helper.run_test(PointTest('test_points_on_curve'))
+# helper.run_test(PointTest('test_rmul'))
 
 
-# #//TODO: RENAME ECC_TESTS TO ECCTest
 # # # # # # # # # # # # # # # # # # # # #
-# #  ECC Tests                          #
-# # # # # # # # # # # # # # # # # # # # #
-#
-helper.run_test(ECC_Tests('test_P'))
-helper.run_test(ECC_Tests('test_generate_priv_key'))
+# #  S256 Point Tests                   #
+# # # # # # # # # # # # # # # # # # # # # #
+# helper.run_test(S256Test('test_point_at_infinity'))
+# helper.run_test(S256Test('test_generating_pub_key'))
+# helper.run_test(S256Test('test_pubpoint'))
+# helper.run_test(S256Test('test_generate_sec_pub_key'))
+# helper.run_test(S256Test('test_generate_address'))
+
+
+# # #//TODO: RENAME ECC_TESTS TO ECCTest
+# # # # # # # # # # # # # # # # # # # # # #
+# # #  ECC Tests                          #
+# # # # # # # # # # # # # # # # # # # # # #
+# helper.run_test(ECC_Tests('test_P'))
+# helper.run_test(ECC_Tests('test_generate_priv_key'))
+
+# # # # Takes 9 - 10 seconds
+# # helper.run_test(ECC_Tests('test_duplicate_priv_key'))
+# helper.run_test(ECC_Tests('test_generate_pub_key'))
+# helper.run_test(ECC_Tests('test_point_at_infinity'))
+# helper.run_test(ECC_Tests('test_pub_key_is_on_curve'))
+# helper.run_test(ECC_Tests('test_pub_key_is_not_on_curve'))
+
+# #
+# # # # # # # # # # # # # # # # # # # # # # #
+# # #  Signature Test                       #
+# # # # # # # # # # # # # # # # # # # # # # #
+# helper.run_test(SignatureTest('test_generating_signature'))
+
+
+# # # # # # # # # # # # # # # # # # # # # # # #
+# # #  Private Key Test                       #
+# # # # # # # # # # # # # # # # # # # # # # # #
+# helper.run_test(PrivateKeyTest('test_init_PrivateKey'))
 # # # Takes 9 - 10 seconds
-# helper.run_test(ECC_Tests('test_duplicate_priv_key'))
-helper.run_test(ECC_Tests('test_generate_pub_key'))
-helper.run_test(ECC_Tests('test_point_at_infinity'))
-helper.run_test(ECC_Tests('test_pub_key_is_on_curve'))
-helper.run_test(ECC_Tests('test_pub_key_is_not_on_curve'))
-
-#
-# # # # # # # # # # # # # # # # # # # # # #
-# #  Signature Test                       #
-# # # # # # # # # # # # # # # # # # # # # #
-helper.run_test(SignatureTest('test_generating_signature'))
-
-
-# # # # # # # # # # # # # # # # # # # # # # #
-# #  Private Key Test                       #
-# # # # # # # # # # # # # # # # # # # # # # #
-helper.run_test(PrivateKeyTest('test_init_PrivateKey'))
-# # Takes 9 - 10 seconds
-# helper.run_test(PrivateKeyTest('test_duplicate_priv_key'))
-helper.run_test(PrivateKeyTest('test_gen_pub_key'))
-helper.run_test(PrivateKeyTest('test_wallet_import_format'))
+# # helper.run_test(PrivateKeyTest('test_duplicate_priv_key'))
+# helper.run_test(PrivateKeyTest('test_gen_pub_key'))
+# helper.run_test(PrivateKeyTest('test_wallet_import_format'))
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 # #  Script Test                                #
 # # # # # # # # # # # # # # # # # # # # # # # # #
-helper.run_test(ScriptTest('test_script_type'))
+# helper.run_test(ScriptTest('test_script_type'))
+# helper.run_test(ScriptTest('test_p2sh'))
 
 # # # # # # # # # # # # # # # # # # # # # # #
 # #  Tx Test                                #
 # # # # # # # # # # # # # # # # # # # # # # #
-helper.run_test(TxTest('test_parse_transaction'))
-helper.run_test(TxTest('test_serialization'))
-helper.run_test(TxTest('test_fee_calculation'))
-helper.run_test(TxTest('test_sig_hash'))
-helper.run_test(TxTest('test_validate_input_signature'))
+# helper.run_test(TxTest('test_parse_transaction'))
+# helper.run_test(TxTest('test_serialization'))
+# helper.run_test(TxTest('test_fee_calculation'))
+# helper.run_test(TxTest('test_sig_hash'))
+# helper.run_test(TxTest('test_validate_input_signature'))
 
+
+# # # # # # # # # # # # # # # # # # # # # # # #
+# # #  Helper Test                            #
+# # # # # # # # # # # # # # # # # # # # # # # #
+# helper.run_test(HelperTest('test_decode_base58'))
+# helper.run_test(HelperTest('test_bitcoin_to_satoshi'))
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # #  Blockchain Explorer Test  - HTTP Requests            #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# helper.run_test(BlockchainExplorerTest('test_request_to_block_cypher'))
 
 # # # # # # # # # # # # # # # # # # # # # # #
-# #  Helper Test                            #
+# #  Wallet Test                            #
 # # # # # # # # # # # # # # # # # # # # # # #
-helper.run_test(HelperTest('test_decode_base58'))
-helper.run_test(HelperTest('test_bitcoin_to_satoshi'))
-
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# #  Blockchain Explorer Test  - HTTP Requests            #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-helper.run_test(BlockchainExplorerTest('test_request_to_block_cypher'))
-
-# # # # # # # # # # # # # # # # # # # # # #
-#  Wallet Test                            #
-# # # # # # # # # # # # # # # # # # # # # #
 helper.run_test(MainTest('test_private_key_generated'))
 helper.run_test(MainTest('test_p2pkh_generation'))
+helper.run_test(MainTest('test_p2sh_generation'))
 
 
 

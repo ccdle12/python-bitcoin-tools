@@ -108,6 +108,23 @@ class Main:
 
         return BlockExplorer.send_tx(raw_tx)
 
+    def generate_reedemScript(self, list_of_pub_keys):
+        if len(list_of_pub_keys) < 1:
+            raise RuntimeError("No public keys passed")
+
+        unhexed_sec = unhexlify(self.sec)
+        len_of_unhexed_sec = bytes([len(unhexed_sec)])
+
+        result = b'\x52' + len_of_unhexed_sec + unhexed_sec
+
+        for pub_key in list_of_pub_keys:
+            result += bytes([len(pub_key)])
+            result += pub_key
+
+        result += b'\x52' + b'\xae'
+
+        return result
+
 
 class MainTest(TestCase):
 
@@ -187,3 +204,28 @@ class MainTest(TestCase):
         expected = b'76a914ada5b5ba34eb8774388d0ac30c5bc3c8e8afae0388ac'
 
         self.assertEqual(expected, hexlify(wallet.generate_p2pkh_pub_key(wallet.get_address(mainnet=False))))
+
+    
+    def test_p2sh_generation(self):
+        print("Should genrate a P2SH using wallet1 and wallet2")
+        
+        # Wallet 1
+        wallet1 = Main().import_private_key(
+            53543775883506703906499148469479904297172220131041556152219913425601595776857)
+
+        # Wallet 2
+        wallet2 = Main().import_private_key(
+            100897809677138163174856952607694300238573305027534078569886890414323321447504)
+
+        print("p2sh reedem script is generated")
+        p2sh_reedemScript = wallet1.generate_reedemScript([unhexlify(wallet2.sec)])
+        self.assertIsNotNone(p2sh_reedemScript)
+
+        print("p2sh redeem script generated is valid")
+        expected = b'52210275bdc1759e7ffb5fb1f07655d5572cec8219b28250acdbc7f936396884d196f221035fb3daf8558881ab26e0955e96eec75937c513d730c5ef5866b4a2a0bd52206052ae'
+        self.assertEqual(expected, hexlify(p2sh_reedemScript))
+
+        print("Should throw run time error, when passing empty list of pub keys")
+        with self.assertRaises(RuntimeError):
+            p2sh_reedemScript = wallet1.generate_reedemScript([])
+

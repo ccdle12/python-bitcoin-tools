@@ -255,3 +255,14 @@ class ScriptTest(TestCase):
         # p2sh script_pubkey
         result = hexlify(script_pubkey.serialize())
         self.assertEqual(b'a91474d691da1574e6b3c192ecfb52cc8984ee7b6c5687', result)
+
+    def test_p2sh(self):
+        print("Should create a p2sh using the existing addresses")
+
+        # Address 1
+        wallet = main.Main().import_private_key(
+            100897809677138163174856952607694300238573305027534078569886890414323321447504)
+
+        # Address 2
+        wallet2 = main.Main().import_private_key(
+            53543775883506703906499148469479904297172220131041556152219913425601595776857)

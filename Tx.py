@@ -372,4 +372,3 @@ class TxTest(TestCase):
         tx = Tx.parse(hex_tx)
 
         self.assertTrue(tx.validate_signature(index))
-
