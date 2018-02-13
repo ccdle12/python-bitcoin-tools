@@ -2,7 +2,7 @@ from unittest import TestCase
 from binascii import unhexlify, hexlify
 from Tx import TxIn, TxOut, Tx
 from Script import Script
-from helper import decode_base58, p2pkh_script, bitcoin_to_satoshi, SIGHASH_ALL
+from helper import decode_base58, p2pkh_script, bitcoin_to_satoshi, SIGHASH_ALL, sha256_ripemd160
 import blockchain_explorer_helper as BlockExplorer
 import PrivateKey
 
@@ -125,6 +125,20 @@ class Main:
 
         return result
 
+    def generate_p2sh_address(self, redeem_script, mainnet=False):
+        if mainnet:
+            prefix = b'\x05'
+        else:
+            prefix = b'\xc0'
+
+        p2sh_address = prefix + sha256_ripemd160(redeem_script)
+
+        return p2sh_address
+
+        
+
+
+
 
 class MainTest(TestCase):
 
@@ -228,4 +242,20 @@ class MainTest(TestCase):
         print("Should throw run time error, when passing empty list of pub keys")
         with self.assertRaises(RuntimeError):
             p2sh_reedemScript = wallet1.generate_reedemScript([])
+
+        print("Should generate an address for reedeem script")
+        print(p2sh_reedemScript)
+        p2sh_address = wallet1.generate_p2sh_address(p2sh_reedemScript)
+        print("p2sh_address: {}".format(hexlify(p2sh_address)))
+        self.assertIsNotNone(p2sh_address)
+
+    def test_send_tx_to_p2sh(self):
+        # Address: mhpzxr92VHqCXy3Zpat41vGgQuv9YcKzt7
+        # SEC: b'02d0b55a1e551abfa7123d3e2130325b5cc77103108a84b91c05add554dfbebebf'
+        wallet1 = Main().import_private_key(
+            12196958284001970079242031404833655250066517166607428365484251744560960260904)
+
+
+        
+       
 
