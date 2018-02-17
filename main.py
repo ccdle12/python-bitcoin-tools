@@ -2,9 +2,10 @@ from unittest import TestCase
 from binascii import unhexlify, hexlify
 from Tx import TxIn, TxOut, Tx
 from Script import Script
-from helper import decode_base58, p2pkh_script, bitcoin_to_satoshi, SIGHASH_ALL, sha256_ripemd160
+from helper import decode_base58, encode_base58_checksum, encode_base58, double_sha256, p2pkh_script, p2sh_script, bitcoin_to_satoshi, SIGHASH_ALL, sha256_ripemd160
 import blockchain_explorer_helper as BlockExplorer
 import PrivateKey
+from io import BytesIO
 
 
 class Main:
@@ -35,7 +36,12 @@ class Main:
 
         return p2pkh_script(h160)
 
-    def send_transaction(self, prev_tx, prev_index, target_addr, amount, change_amount):
+    def generate_p2sh_pub_key(self, address):
+        h160 = decode_base58(address)
+
+        return p2sh_script(h160)
+
+    def send_transaction(self, prev_tx, prev_index, target_addr, amount, change_amount, p2sh=False):
         # Initialize Inputs
         tx_inputs = []
 
@@ -52,7 +58,14 @@ class Main:
 
         # decode the hash160 from the target address, to be used in the p2pkh (LOCKING SCRIPT) on this output
         # Use the target_addr_h160 in create the p2pkh (LOCKING SCRIPT) on this output
-        target_output_p2pkh = self.generate_p2pkh_pub_key(target_addr)
+
+        if p2sh:
+            print("P2SH SCRIPT PUBKEY")
+            target_output_script_pub_key = self.generate_p2sh_pub_key(target_addr)
+        else:
+            target_output_script_pub_key = self.generate_p2pkh_pub_key(target_addr)
+
+        print("Target Output: {}".format(hexlify(target_output_script_pub_key)))
 
         # Convert the target output amount to satoshis
         output_amount_in_satoshis = bitcoin_to_satoshi(amount)
@@ -60,7 +73,7 @@ class Main:
         # Create the TX OUTPUT, pass in the amount and the LOCKING SCRIPT
         tx_outputs.append(TxOut
                           (amount=output_amount_in_satoshis,
-                           script_pub_key=target_output_p2pkh
+                           script_pub_key=target_output_script_pub_key
                            ))
 
         # decode the hash160 for the change address (Sending coins back to sender)
@@ -77,7 +90,7 @@ class Main:
             script_pub_key=change_output_p2pkh
         ))
 
-        # sign with tx object with SIGHASH_ALL
+        # sign with tx object with SIGHASH_ALL, sender is signing all the inputs and outputs
         sig_hash = SIGHASH_ALL
 
         # Create the Tx object with all the inputs and outputs created above
@@ -106,8 +119,10 @@ class Main:
         # Create a block explorer instance and serialize transaction
         raw_tx = hexlify(transaction.serialize()).decode('ascii')
 
+        print("RAW TX: {}".format(raw_tx))
         return BlockExplorer.send_tx(raw_tx)
 
+    # Not sure if Redeem Script should be in this class
     def generate_reedemScript(self, list_of_pub_keys):
         if len(list_of_pub_keys) < 1:
             raise RuntimeError("No public keys passed")
@@ -126,14 +141,27 @@ class Main:
         return result
 
     def generate_p2sh_address(self, redeem_script, mainnet=False):
+        # print("Redeem Script before hasing: {}".format(hexlify(redeem_script)))
+        # redeem_script = unhexlify(redeem_script)
+
         if mainnet:
             prefix = b'\x05'
         else:
             prefix = b'\xc0'
 
-        p2sh_address = prefix + sha256_ripemd160(redeem_script)
+        h160 = sha256_ripemd160(redeem_script)
 
-        return p2sh_address
+        hashed_redeem_script = sha256_ripemd160(redeem_script)
+
+        # print("h160 redeem script: {}".format(hexlify(hashed_redeem_script)))
+        # print(unhexlify(h160))
+        raw = prefix + h160
+
+        address = encode_base58_checksum(raw)
+
+        # print("Address: {}".format(address))
+
+        return address
 
         
 
@@ -244,16 +272,73 @@ class MainTest(TestCase):
             p2sh_reedemScript = wallet1.generate_reedemScript([])
 
         print("Should generate an address for reedeem script")
-        print(p2sh_reedemScript)
-        p2sh_address = wallet1.generate_p2sh_address(p2sh_reedemScript)
-        print("p2sh_address: {}".format(hexlify(p2sh_address)))
+        print(hexlify(p2sh_reedemScript))
+
+        p2sh_address = wallet1.generate_p2sh_address(p2sh_reedemScript, mainnet=False)
+        print("p2sh_address: {}".format(p2sh_address))
         self.assertIsNotNone(p2sh_address)
 
     def test_send_tx_to_p2sh(self):
         # Address: mhpzxr92VHqCXy3Zpat41vGgQuv9YcKzt7
         # SEC: b'02d0b55a1e551abfa7123d3e2130325b5cc77103108a84b91c05add554dfbebebf'
+
+        # P2SH Address: 2LSKzp4QheQU5VR1Zuaj91Q7jbnDFzPAZ1V
+        # Redeem Script: 52210275bdc1759e7ffb5fb1f07655d5572cec8219b28250acdbc7f936396884d196f221035fb3daf8558881ab26e0955e96eec75937c513d730c5ef5866b4a2a0bd52206052ae
+
         wallet1 = Main().import_private_key(
             12196958284001970079242031404833655250066517166607428365484251744560960260904)
+
+        print("Should hash160 correctly")
+        redeem_script = '52210275bdc1759e7ffb5fb1f07655d5572cec8219b28250acdbc7f936396884d196f221035fb3daf8558881ab26e0955e96eec75937c513d730c5ef5866b4a2a0bd52206052ae'
+        redeem_script = unhexlify(redeem_script)
+        h160 = hexlify(sha256_ripemd160(redeem_script)).decode('ascii')
+        expected = b'7274a4081f8e7f7fd9b4d1f048e853e96c6352c5'.decode('ascii')
+
+        self.assertEqual(expected, h160)
+
+
+        # target_address = "2LSKzp4QheQU5VR1Zuaj91Q7jbnDFzPAZ1V"
+        print("Should generate correct address")
+        target_address = wallet1.generate_p2sh_address(redeem_script)
+        expected = '2LSKzp4QheQU5VR1Zuaj91Q7jbnDFzPAZ1V'
+        print("Target address: {}".format(target_address))
+        self.assertEqual(expected, target_address)
+        
+
+        # response = wallet1.send_transaction(
+        #     prev_tx = unhexlify('b95c8abd638c29cffd34d8a0552a3accb2a04fb567186bb1bdf886f087b074e3'), 
+        #     prev_index = 1, 
+        #     target_addr = target_address, 
+        #     amount = 0.02,
+        #     change_amount = 1.049,
+        #     p2sh=True)
+        
+        # self.assertEqual(201, response)
+
+        print("P2SH should contain the same hashed redeem script")
+        p2sh_scriptPubKey = wallet1.generate_p2sh_pub_key(target_address)
+        print(p2sh_scriptPubKey)
+
+        # Extracting p2sh from scriptPubKey
+        stream = BytesIO(p2sh_scriptPubKey)
+        current = stream.read(1)
+
+        for i in range(2):
+            current = stream.read(1)
+            
+        p2sh_addr_hash160 = b''
+        while current != b'\x87':
+            p2sh_addr_hash160 += current
+            current = stream.read(1)
+
+        p2sh_from_scriptPubKey = hexlify(p2sh_addr_hash160)
+        reedeem_script_hash160 = hexlify(sha256_ripemd160(redeem_script))
+
+        print("Hexed p2sh addr: {}".format(p2sh_from_scriptPubKey))
+        print("Redeem Script hashed: {}".format(hexlify(sha256_ripemd160(redeem_script))))
+        
+        #Expecting: 7274a4081f8e7f7fd9b4d1f048e853e96c6352c5
+        self.assertEqual(p2sh_from_scriptPubKey, reedeem_script_hash160)
 
 
         
