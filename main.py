@@ -356,10 +356,18 @@ class MainTest(TestCase):
 
         print("Should take address and decode base58 to get hash160")
         print("----------------------------------------------------------------------------------------------------------------------------")
+        #7274a4081f8e7f7fd9b4d1f048e853e96c6352c5
         expected = b'7274a4081f8e7f7fd9b4d1f048e853e96c6352c5'
         hash160 = decode_base58(address)
 
         self.assertEqual(expected, hexlify(hash160))
+
+        print("Address from Block Cypher is decoded to the same h160, what does this mean?")
+        print("----------------------------------------------------------------------------------------------------------------------------")
+        #7274a4081f8e7f7fd9b4d1f048e853e96c6352c5
+        expected = b'7274a4081f8e7f7fd9b4d1f048e853e96c6352c5'
+        h160 = decode_base58('2N3gQkVbrV8Kam9Zv1G4QwuCt7oF2skpCPE')
         
+        self.assertEqual(expected, hexlify(h160))
        
 
