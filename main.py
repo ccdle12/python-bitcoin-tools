@@ -151,15 +151,16 @@ class Main:
 
         h160 = sha256_ripemd160(redeem_script)
 
-        hashed_redeem_script = sha256_ripemd160(redeem_script)
+        # hashed_redeem_script = sha256_ripemd160(redeem_script)
 
         # print("h160 redeem script: {}".format(hexlify(hashed_redeem_script)))
         # print(unhexlify(h160))
+        print("Prefix: {}".format(prefix))
         raw = prefix + h160
 
         address = encode_base58_checksum(raw)
 
-        # print("Address: {}".format(address))
+        print("Address: {}".format(address))
 
         return address
 
@@ -289,7 +290,8 @@ class MainTest(TestCase):
             12196958284001970079242031404833655250066517166607428365484251744560960260904)
 
         print("Should hash160 correctly")
-        redeem_script = '52210275bdc1759e7ffb5fb1f07655d5572cec8219b28250acdbc7f936396884d196f221035fb3daf8558881ab26e0955e96eec75937c513d730c5ef5866b4a2a0bd52206052ae'
+        print("----------------------------------------------------------------------------------------------------------------------------")
+        redeem_script = b'52210275bdc1759e7ffb5fb1f07655d5572cec8219b28250acdbc7f936396884d196f221035fb3daf8558881ab26e0955e96eec75937c513d730c5ef5866b4a2a0bd52206052ae'
         redeem_script = unhexlify(redeem_script)
         h160 = hexlify(sha256_ripemd160(redeem_script)).decode('ascii')
         expected = b'7274a4081f8e7f7fd9b4d1f048e853e96c6352c5'.decode('ascii')
@@ -299,6 +301,7 @@ class MainTest(TestCase):
 
         # target_address = "2LSKzp4QheQU5VR1Zuaj91Q7jbnDFzPAZ1V"
         print("Should generate correct address")
+        print("----------------------------------------------------------------------------------------------------------------------------")
         target_address = wallet1.generate_p2sh_address(redeem_script)
         expected = '2LSKzp4QheQU5VR1Zuaj91Q7jbnDFzPAZ1V'
         print("Target address: {}".format(target_address))
@@ -316,6 +319,7 @@ class MainTest(TestCase):
         # self.assertEqual(201, response)
 
         print("P2SH should contain the same hashed redeem script")
+        print("----------------------------------------------------------------------------------------------------------------------------")
         p2sh_scriptPubKey = wallet1.generate_p2sh_pub_key(target_address)
         print(p2sh_scriptPubKey)
 
@@ -340,7 +344,22 @@ class MainTest(TestCase):
         #Expecting: 7274a4081f8e7f7fd9b4d1f048e853e96c6352c5
         self.assertEqual(p2sh_from_scriptPubKey, reedeem_script_hash160)
 
+        print("Should now take hash160 from script pub key and create address")
+        print("----------------------------------------------------------------------------------------------------------------------------")
+        expected = '2LSKzp4QheQU5VR1Zuaj91Q7jbnDFzPAZ1V'
+        prefix = b'\xc0'
+        print("P2SH from scriptPubKey: {}".format(p2sh_from_scriptPubKey))
+        address = encode_base58_checksum(prefix + unhexlify(p2sh_from_scriptPubKey))
 
+        self.assertEqual(expected, address)
+
+
+        print("Should take address and decode base58 to get hash160")
+        print("----------------------------------------------------------------------------------------------------------------------------")
+        expected = b'7274a4081f8e7f7fd9b4d1f048e853e96c6352c5'
+        hash160 = decode_base58(address)
+
+        self.assertEqual(expected, hexlify(hash160))
         
        
 
