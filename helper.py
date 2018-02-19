@@ -1,5 +1,5 @@
 import hashlib
-from binascii import hexlify
+from binascii import hexlify, unhexlify
 from unittest import TestCase
 
 SIGHASH_ALL = 1
@@ -132,6 +132,57 @@ def p2sh_script(h160):
     # Takes the h160 of an address and inserts it into p2sh scriptPubKey format
     print("H160 of script: {}".format(hexlify(h160)))
     return b'\xa9\x14' + h160 + b'\x87'
+
+def generate_reedemScript(list_of_pub_keys):
+    if len(list_of_pub_keys) < 1:
+        raise RuntimeError("No public keys passed")
+
+    unhexed_sec = unhexlify(self.sec)
+    len_of_unhexed_sec = bytes([len(unhexed_sec)])
+
+    result = b'\x52' + len_of_unhexed_sec + unhexed_sec
+
+    for pub_key in list_of_pub_keys:
+        result += bytes([len(pub_key)])
+        result += pub_key
+
+    result += b'\x52' + b'\xae'
+
+    return result
+
+def generate_p2sh_address(redeem_script, mainnet=False):
+        # print("Redeem Script before hasing: {}".format(hexlify(redeem_script)))
+        # redeem_script = unhexlify(redeem_script)
+
+        if mainnet:
+            prefix = b'\x05'
+        else:
+            prefix = b'\xc0'
+
+        h160 = sha256_ripemd160(redeem_script)
+
+        # hashed_redeem_script = sha256_ripemd160(redeem_script)
+
+        # print("h160 redeem script: {}".format(hexlify(hashed_redeem_script)))
+        # print(unhexlify(h160))
+        print("Prefix: {}".format(prefix))
+        raw = prefix + h160
+
+        address = encode_base58_checksum(raw)
+
+        print("Address: {}".format(address))
+
+        return address
+
+def generate_p2pkh_pub_key(address):
+    h160 = decode_base58(address)
+
+    return p2pkh_script(h160)
+
+def generate_p2sh_pub_key(address):
+    h160 = decode_base58(address)
+
+    return p2sh_script(h160)
 
 
 class HelperTest(TestCase):
