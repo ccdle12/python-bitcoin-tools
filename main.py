@@ -49,7 +49,7 @@ class Main:
         # decode the hash160 from the target address, to be used in the p2pkh (LOCKING SCRIPT) on this output
         # Use the target_addr_h160 in create the p2pkh (LOCKING SCRIPT) on this output
 
-        target_output_script_pub_key = self.generate_p2pkh_pub_key(target_addr)
+        target_output_script_pub_key = generate_p2pkh_pub_key(target_addr)
 
         print("Target Output: {}".format(hexlify(target_output_script_pub_key)))
 
@@ -64,7 +64,7 @@ class Main:
 
         # decode the hash160 for the change address (Sending coins back to sender)
         # Create the p2pkh (LOCKING SCRIPT) for the change output (sending back to sender)
-        change_output_p2pkh = self.generate_p2pkh_pub_key(self.get_address(mainnet=False))
+        change_output_p2pkh = generate_p2pkh_pub_key(self.get_address(mainnet=False))
 
         # Convert the change amount output to satoshis
         change_amount_in_satoshis = bitcoin_to_satoshi(change_amount)
@@ -252,15 +252,14 @@ class MainTest(TestCase):
         self.assertEqual(expected, target_address)
         
 
-        # response = wallet1.send_transaction(
-        #     prev_tx = unhexlify('b95c8abd638c29cffd34d8a0552a3accb2a04fb567186bb1bdf886f087b074e3'), 
-        #     prev_index = 1, 
-        #     target_addr = target_address, 
-        #     amount = 0.02,
-        #     change_amount = 1.049,
-        #     p2sh=True)
+        response = wallet1.send_transaction(
+            prev_tx = unhexlify('b95c8abd638c29cffd34d8a0552a3accb2a04fb567186bb1bdf886f087b074e3'), 
+            prev_index = 1, 
+            target_addr = target_address, 
+            amount = 0.02,
+            change_amount = 1.049)
         
-        # self.assertEqual(201, response)
+        self.assertEqual(201, response)
 
         print("P2SH should contain the same hashed redeem script")
         print("----------------------------------------------------------------------------------------------------------------------------")
