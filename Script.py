@@ -234,6 +234,16 @@ class Script:
             redeem_script = Script.parse(self.elements[-1])
             return redeem_script.elements[index + 1]
 
+    def redeem_script(self):
+        sig_type = self.type()
+        #If the type is p2sh signature, return the last object which is the redeem script
+        print("Printing Elements: {}".format(self.elements))
+        print("Elements trying to return a redeem script: {}".format(self.elements[-1]))
+        if sig_type == 'p2sh sig':
+            return self.elements[-1]
+        else:
+            raise RuntimeError('script types needs to be p2sh sig')
+
 
 class ScriptTest(TestCase):
     def test_script_type(self):

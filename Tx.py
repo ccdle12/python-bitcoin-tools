@@ -94,7 +94,7 @@ class Tx:
 
         return input_amount - output_amount
 
-    def sig_hash(self, input_index, hash_type):
+    def sig_hash(self, input_index, hash_type, redeem_script):
         '''Returns the integer representation of the hash that needs to get
         signed for index input_index'''
         # create a new set of tx_ins (alt_tx_ins)
@@ -103,7 +103,7 @@ class Tx:
         # iterate over self.tx_ins
         for tx_in in self.tx_ins:
             # create a new TxIn that has a blank script_sig (b'') and add to alt_tx_ins
-            # print(hexlify(tx_in.prev_hash))
+            print("Prev Transaction of input: {}".format(hexlify(tx_in.prev_hash)))
             alt_tx_ins.append(TxIn(
                 prev_hash=tx_in.prev_hash,
                 prev_index=tx_in.prev_index,
@@ -118,7 +118,7 @@ class Tx:
 
         # grab the script_pubkey of the input
         script_pubkey = signing_input.script_pubkey(self.testnet)
-        # print("Script pubkey: {}".format(script_pubkey))
+        print("Script pubkey: {}".format(script_pubkey))
 
         # Check the sig type
         sig_type = script_pubkey.type()
@@ -126,9 +126,12 @@ class Tx:
         if sig_type == 'p2pkh':
             signing_input.script_sig = script_pubkey
         elif sig_type == 'p2sh':
+            # Get the tx input at index passed of the tx_object
             current_input = self.tx_ins[input_index]
-            signing_input.script_sig = Script.parse(
-                current_input.redeem_script())
+            # current_input.script_sig = Script.parse(redeem_script)
+            print("REDEEM SCRIPT Sig Passed: {}".format(current_input.redeem_script()))
+
+            signing_input.script_sig = Script.parse(current_input.redeem_script())
         else:
             raise RuntimeError('no valid sig_type')
 
@@ -272,6 +275,11 @@ class TxIn:
         tx = self.fetch_tx(testnet=testnet)
 
         return tx.tx_outs[self.prev_index].script_pub_key
+
+    def redeem_script(self):
+        ''' Returns a redeem script if there is one '''
+        return self.script_sig.redeem_script()
+
 
 
 class TxOut:

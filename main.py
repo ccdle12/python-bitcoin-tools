@@ -31,7 +31,7 @@ class Main:
     def import_private_key(cls, secret):
         return cls(secret)
  
-    def send_transaction(self, prev_tx, prev_index, target_addr, amount, change_amount):
+    def send_transaction(self, prev_tx, prev_index, target_addr, amount, change_amount, redeem_script, p2sh=False):
         # Initialize Inputs
         tx_inputs = []
 
@@ -48,7 +48,12 @@ class Main:
 
         # decode the hash160 from the target address, to be used in the p2pkh (LOCKING SCRIPT) on this output
         # Use the target_addr_h160 in create the p2pkh (LOCKING SCRIPT) on this output
-
+        print("Target Address: {}".format(target_addr))
+        # if p2sh:
+            # print("Creating p2sh pubkey:")
+            # target_output_script_pub_key = generate_p2sh_pub_key(target_addr)
+            # print("P2SH CREATED: {}".format(target_output_script_pub_key))
+        # else:    
         target_output_script_pub_key = generate_p2pkh_pub_key(target_addr)
 
         print("Target Output: {}".format(hexlify(target_output_script_pub_key)))
@@ -87,6 +92,9 @@ class Main:
                          testnet=True)
 
         # Hash of the message to sign
+        # if p2sh:
+            # z = transaction.sig_hash(0, sig_hash, redeem_script)
+        # else:
         z = transaction.sig_hash(0, sig_hash)
 
         # Sign z with the private key
@@ -99,18 +107,15 @@ class Main:
         sec = unhexlify(self.keys.public_key.get_sec(compressed=True))
 
         # Creating the p2pkh script sig to UNLOCK the input at index 0
-        # print("Sig: {}".format(hexlify(sig)))
-        # print("Sec: {}".format(hexlify(sec)))
-        # print("Passing Sig and Sec: {}".format([sig, sec]))
         unlocking_script = Script([sig, sec])
-        # print("Unlocking Script Created: {}".format(hexlify(unlocking_script)))
         transaction.tx_ins[0].script_sig = unlocking_script
 
         # Create a block explorer instance and serialize transaction
         raw_tx = hexlify(transaction.serialize()).decode('ascii')
 
-        print("RAW TX: {}".format(raw_tx))
+        # print("RAW TX: {}".format(raw_tx))
         return BlockExplorer.send_tx(raw_tx)
+
 
 
 class MainTest(TestCase):
@@ -253,11 +258,13 @@ class MainTest(TestCase):
         
 
         response = wallet1.send_transaction(
-            prev_tx = unhexlify('b95c8abd638c29cffd34d8a0552a3accb2a04fb567186bb1bdf886f087b074e3'), 
-            prev_index = 1, 
-            target_addr = target_address, 
-            amount = 0.02,
-            change_amount = 1.049)
+            prev_tx = unhexlify('7c95996721bba829589a622d4bed06410ab455a8be932271d53ec9630b586c20'), 
+            prev_index = 0, 
+            target_addr = 'mhpzxr92VHqCXy3Zpat41vGgQuv9YcKzt7', 
+            amount = 0.019,
+            change_amount = 0.001,
+            redeem_script=unhexlify(b'52210275bdc1759e7ffb5fb1f07655d5572cec8219b28250acdbc7f936396884d196f221035fb3daf8558881ab26e0955e96eec75937c513d730c5ef5866b4a2a0bd52206052ae'),
+            p2sh=True)
         
         self.assertEqual(201, response)
 
