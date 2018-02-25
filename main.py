@@ -2,7 +2,7 @@ from unittest import TestCase
 from binascii import unhexlify, hexlify
 from Tx import TxIn, TxOut, Tx
 from Script import Script
-from helper import decode_base58, encode_base58_checksum, encode_base58, double_sha256, p2pkh_script, p2sh_script, bitcoin_to_satoshi, SIGHASH_ALL, sha256_ripemd160, generate_reedemScript, generate_p2sh_address, generate_p2pkh_pub_key, generate_p2sh_pub_key
+from helper import decode_base58, encode_base58_checksum, encode_base58, double_sha256, p2pkh_script, p2sh_script, bitcoin_to_satoshi, SIGHASH_ALL, sha256_ripemd160, generate_reedemScript, generate_p2sh_address, generate_p2pkh_pub_key, generate_p2sh_pub_key, satoshi_to_bitcoin
 import blockchain_explorer_helper as BlockExplorer
 import PrivateKey
 from io import BytesIO
@@ -28,7 +28,7 @@ class Main:
         return self.keys.public_key.get_address(self.sec, mainnet)
 
     def get_balance(self, mainnet=False):
-        return BlockExplorer.request_balance(self.get_address)
+        return BlockExplorer.request_balance(self.get_address())
 
     @classmethod
     def import_private_key(cls, secret):
@@ -263,16 +263,16 @@ class MainTest(TestCase):
         print("Target address: {}".format(target_address))
         self.assertEqual(expected, target_address)
         
-        response = wallet1.send_transaction(
-            prev_tx = unhexlify('7c95996721bba829589a622d4bed06410ab455a8be932271d53ec9630b586c20'), 
-            prev_index = 0, 
-            target_addr = 'mhpzxr92VHqCXy3Zpat41vGgQuv9YcKzt7', 
-            amount = 0.019,
-            change_amount = 0.001,
-            redeem_script=unhexlify(b'52210275bdc1759e7ffb5fb1f07655d5572cec8219b28250acdbc7f936396884d196f221035fb3daf8558881ab26e0955e96eec75937c513d730c5ef5866b4a2a0bd52206052ae'),
-            p2sh=False)
+        # response = wallet1.send_transaction(
+        #     prev_tx = unhexlify('7c95996721bba829589a622d4bed06410ab455a8be932271d53ec9630b586c20'), 
+        #     prev_index = 0, 
+        #     target_addr = 'mhpzxr92VHqCXy3Zpat41vGgQuv9YcKzt7', 
+        #     amount = 0.019,
+        #     change_amount = 0.001,
+        #     redeem_script=unhexlify(b'52210275bdc1759e7ffb5fb1f07655d5572cec8219b28250acdbc7f936396884d196f221035fb3daf8558881ab26e0955e96eec75937c513d730c5ef5866b4a2a0bd52206052ae'),
+        #     p2sh=False)
         
-        self.assertEqual(201, response)
+        # self.assertEqual(201, response)
 
         print("P2SH should contain the same hashed redeem script")
         print("----------------------------------------------------------------------------------------------------------------------------")
@@ -328,11 +328,18 @@ class MainTest(TestCase):
 
     def test_get_balance(self):
         print("Should return a 201 from requesting balance")
-
+        print("----------------------------------------------------------------------------------------------------------------------------")
         wallet1 = Main().import_private_key(
             12196958284001970079242031404833655250066517166607428365484251744560960260904)
-        expected = 201
+        expected = 200
+        response = wallet1.get_balance()
+        self.assertEqual(expected, wallet1.get_balance().status_code)
 
-        self.assertEqual(expected, wallet1.get_balance())
-       
+        print("Should return a the balance of wallet1 address")
+        print("----------------------------------------------------------------------------------------------------------------------------")
+        expected = satoshi_to_bitcoin(104900000)
+        address = response.json()["address"]
+        balance = satoshi_to_bitcoin(response.json()["balance"])
+
+        self.assertEqual(expected, balance)
 

@@ -96,7 +96,7 @@ from blockchain_explorer_helper import BlockchainExplorerTest
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # #  Blockchain Explorer Test  - HTTP Requests            #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# helper.run_test(BlockchainExplorerTest('test_request_to_block_cypher'))
+helper.run_test(BlockchainExplorerTest('test_request_to_block_cypher'))
 
 # # # # # # # # # # # # # # # # # # # # # # #
 # #  Wallet Test                            #

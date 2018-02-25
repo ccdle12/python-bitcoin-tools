@@ -96,7 +96,7 @@ def read_varint(s):
 
 
 def satoshi_to_bitcoin(satoshi):
-    return int(satoshi / 100000000)
+    return float(satoshi / 100000000)
 
 
 def bitcoin_to_satoshi(bitcoin):

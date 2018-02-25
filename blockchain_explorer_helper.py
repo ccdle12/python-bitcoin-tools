@@ -55,6 +55,16 @@ def create_json_tx(raw_tx):
     tx_object = {"tx": raw_tx}
     return json.dumps(tx_object)
 
+def request_balance(address):
+    request_balance_url = "/addrs/{}/balance".format(address)
+
+    response = requests.get(blockchain_cypher_url + request_balance_url)
+
+    if response.status_code != 200:
+        raise RuntimeError("The server returned an error: {}".format(response.json()))
+
+    return response
+
 
 class BlockchainExplorerTest(TestCase):
     def test_request_to_block_cypher(self):
@@ -65,13 +75,12 @@ class BlockchainExplorerTest(TestCase):
         print("--------------------------------------------------------------")
         print("Should make request for the balance of the address passed")
         expected = 200
-        self.assertEqual(expected, get_balance("mfke2PVhGePAy1GfZNotr6LeXfQ5nwnZTa").status_code)
+        self.assertEqual(expected, request_balance("mfke2PVhGePAy1GfZNotr6LeXfQ5nwnZTa").status_code)
 
         print("--------------------------------------------------------------")
         print("Should return an error since we haven't passed a valid address")
-
         with self.assertRaises(RuntimeError):
-            get_balance("m2PVhGePAy1GfZNotr6LeXfQ5nw")
+            request_balance("m2PVhGePAy1GfZNotr6LeXfQ5nw")
 
         print("--------------------------------------------------------------")
         print("Should make request for the balance of the address passed")
