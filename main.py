@@ -27,6 +27,9 @@ class Main:
     def get_address(self, mainnet=False):
         return self.keys.public_key.get_address(self.sec, mainnet)
 
+    def get_balance(self, mainnet=False):
+        return BlockExplorer.request_balance(self.get_address)
+
     @classmethod
     def import_private_key(cls, secret):
         return cls(secret)
@@ -49,6 +52,7 @@ class Main:
         # decode the hash160 from the target address, to be used in the p2pkh (LOCKING SCRIPT) on this output
         # Use the target_addr_h160 in create the p2pkh (LOCKING SCRIPT) on this output
         print("Target Address: {}".format(target_addr))
+
         # if p2sh:
             # print("Creating p2sh pubkey:")
             # target_output_script_pub_key = generate_p2sh_pub_key(target_addr)
@@ -69,6 +73,8 @@ class Main:
 
         # decode the hash160 for the change address (Sending coins back to sender)
         # Create the p2pkh (LOCKING SCRIPT) for the change output (sending back to sender)
+
+        #TODO: CHECK CHANGE ADDRESS TYPE TO GENERATE THE CORRECT SCRIPT PUB KEY
         change_output_p2pkh = generate_p2pkh_pub_key(self.get_address(mainnet=False))
 
         # Convert the change amount output to satoshis
@@ -112,6 +118,7 @@ class Main:
 
         # Create a block explorer instance and serialize transaction
         raw_tx = hexlify(transaction.serialize()).decode('ascii')
+        print(raw_tx)
 
         # print("RAW TX: {}".format(raw_tx))
         return BlockExplorer.send_tx(raw_tx)
@@ -210,7 +217,7 @@ class MainTest(TestCase):
             100897809677138163174856952607694300238573305027534078569886890414323321447504)
 
         print("p2sh reedem script is generated")
-        p2sh_reedemScript = generate_reedemScript([unhexlify(wallet2.sec)])
+        p2sh_reedemScript = generate_reedemScript(wallet1.sec, [unhexlify(wallet2.sec)])
         self.assertIsNotNone(p2sh_reedemScript)
 
         print("p2sh redeem script generated is valid")
@@ -219,7 +226,7 @@ class MainTest(TestCase):
 
         print("Should throw run time error, when passing empty list of pub keys")
         with self.assertRaises(RuntimeError):
-            p2sh_reedemScript = generate_reedemScript([])
+            p2sh_reedemScript = generate_reedemScript(wallet1.sec, [])
 
         print("Should generate an address for reedeem script")
         print(hexlify(p2sh_reedemScript))
@@ -232,7 +239,7 @@ class MainTest(TestCase):
         # Address: mhpzxr92VHqCXy3Zpat41vGgQuv9YcKzt7
         # SEC: b'02d0b55a1e551abfa7123d3e2130325b5cc77103108a84b91c05add554dfbebebf'
 
-        # P2SH Address: 2LSKzp4QheQU5VR1Zuaj91Q7jbnDFzPAZ1V
+        # P2SH Address: 2N3gQkVbrV8Kam9Zv1G4QwuCt7oF2skpCPE
         # Redeem Script: 52210275bdc1759e7ffb5fb1f07655d5572cec8219b28250acdbc7f936396884d196f221035fb3daf8558881ab26e0955e96eec75937c513d730c5ef5866b4a2a0bd52206052ae
 
         wallet1 = Main().import_private_key(
@@ -248,15 +255,14 @@ class MainTest(TestCase):
         self.assertEqual(expected, h160)
 
 
-        # target_address = "2LSKzp4QheQU5VR1Zuaj91Q7jbnDFzPAZ1V"
+        # target_address = "2N3gQkVbrV8Kam9Zv1G4QwuCt7oF2skpCPE"
         print("Should generate correct address")
         print("----------------------------------------------------------------------------------------------------------------------------")
         target_address = generate_p2sh_address(redeem_script)
-        expected = '2LSKzp4QheQU5VR1Zuaj91Q7jbnDFzPAZ1V'
+        expected = '2N3gQkVbrV8Kam9Zv1G4QwuCt7oF2skpCPE'
         print("Target address: {}".format(target_address))
         self.assertEqual(expected, target_address)
         
-
         response = wallet1.send_transaction(
             prev_tx = unhexlify('7c95996721bba829589a622d4bed06410ab455a8be932271d53ec9630b586c20'), 
             prev_index = 0, 
@@ -264,7 +270,7 @@ class MainTest(TestCase):
             amount = 0.019,
             change_amount = 0.001,
             redeem_script=unhexlify(b'52210275bdc1759e7ffb5fb1f07655d5572cec8219b28250acdbc7f936396884d196f221035fb3daf8558881ab26e0955e96eec75937c513d730c5ef5866b4a2a0bd52206052ae'),
-            p2sh=True)
+            p2sh=False)
         
         self.assertEqual(201, response)
 
@@ -319,5 +325,14 @@ class MainTest(TestCase):
         h160 = decode_base58('2N3gQkVbrV8Kam9Zv1G4QwuCt7oF2skpCPE')
         
         self.assertEqual(expected, hexlify(h160))
+
+    def test_get_balance(self):
+        print("Should return a 201 from requesting balance")
+
+        wallet1 = Main().import_private_key(
+            12196958284001970079242031404833655250066517166607428365484251744560960260904)
+        expected = 201
+
+        self.assertEqual(expected, wallet1.get_balance())
        
 

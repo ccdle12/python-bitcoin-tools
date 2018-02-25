@@ -237,8 +237,8 @@ class Script:
     def redeem_script(self):
         sig_type = self.type()
         #If the type is p2sh signature, return the last object which is the redeem script
-        print("Printing Elements: {}".format(self.elements))
-        print("Elements trying to return a redeem script: {}".format(self.elements[-1]))
+        # print("Printing Elements: {}".format(self.elements))
+        # print("Elements trying to return a redeem script: {}".format(self.elements[-1]))
         if sig_type == 'p2sh sig':
             return self.elements[-1]
         else:

@@ -94,7 +94,7 @@ class Tx:
 
         return input_amount - output_amount
 
-    def sig_hash(self, input_index, hash_type, redeem_script):
+    def sig_hash(self, input_index, hash_type):
         '''Returns the integer representation of the hash that needs to get
         signed for index input_index'''
         # create a new set of tx_ins (alt_tx_ins)
@@ -129,9 +129,9 @@ class Tx:
             # Get the tx input at index passed of the tx_object
             current_input = self.tx_ins[input_index]
             # current_input.script_sig = Script.parse(redeem_script)
-            print("REDEEM SCRIPT Sig Passed: {}".format(current_input.redeem_script()))
+            # print("REDEEM SCRIPT Sig Passed: {}".format(current_input.redeem_script()))
 
-            signing_input.script_sig = Script.parse(current_input.redeem_script())
+            # signing_input.script_sig = Script.parse(current_input.redeem_script())
         else:
             raise RuntimeError('no valid sig_type')
 

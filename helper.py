@@ -20,7 +20,6 @@ def encode_base58(s):
     # There are no 0's in base58,
     # Replace the leading 0's with 1's,
     # 1's represent 0's in base58
-    print("Count: {0}".format(count))
     prefix = b'1' * count
 
     # Convert hexadecimal value of s to base-16 integer
@@ -133,11 +132,11 @@ def p2sh_script(h160):
     print("H160 of script: {}".format(hexlify(h160)))
     return b'\xa9\x14' + h160 + b'\x87'
 
-def generate_reedemScript(list_of_pub_keys):
+def generate_reedemScript(owners_sec, list_of_pub_keys):
     if len(list_of_pub_keys) < 1:
         raise RuntimeError("No public keys passed")
 
-    unhexed_sec = unhexlify(self.sec)
+    unhexed_sec = unhexlify(owners_sec)
     len_of_unhexed_sec = bytes([len(unhexed_sec)])
 
     result = b'\x52' + len_of_unhexed_sec + unhexed_sec
@@ -151,26 +150,13 @@ def generate_reedemScript(list_of_pub_keys):
     return result
 
 def generate_p2sh_address(redeem_script, mainnet=False):
-        # print("Redeem Script before hasing: {}".format(hexlify(redeem_script)))
-        # redeem_script = unhexlify(redeem_script)
-
         if mainnet:
             prefix = b'\x05'
         else:
-            prefix = b'\xc0'
+            prefix = b'\xc4'
 
         h160 = sha256_ripemd160(redeem_script)
-
-        # hashed_redeem_script = sha256_ripemd160(redeem_script)
-
-        # print("h160 redeem script: {}".format(hexlify(hashed_redeem_script)))
-        # print(unhexlify(h160))
-        print("Prefix: {}".format(prefix))
-        raw = prefix + h160
-
-        address = encode_base58_checksum(raw)
-
-        print("Address: {}".format(address))
+        address = encode_base58_checksum(prefix + h160)
 
         return address
 
