@@ -96,16 +96,17 @@ from blockchain_explorer_helper import BlockchainExplorerTest
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # # #  Blockchain Explorer Test  - HTTP Requests            #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-helper.run_test(BlockchainExplorerTest('test_request_to_block_cypher'))
+# helper.run_test(BlockchainExplorerTest('test_request_to_block_cypher'))
 
 # # # # # # # # # # # # # # # # # # # # # # #
 # #  Wallet Test                            #
 # # # # # # # # # # # # # # # # # # # # # # #
 # helper.run_test(MainTest('test_private_key_generated'))
 # helper.run_test(MainTest('test_p2pkh_generation'))
-helper.run_test(MainTest('test_p2sh_generation'))
-helper.run_test(MainTest('test_send_tx_to_p2sh'))
-helper.run_test(MainTest('test_get_balance'))
+# helper.run_test(MainTest('test_p2sh_generation'))
+# helper.run_test(MainTest('test_send_tx_to_p2sh'))
+# helper.run_test(MainTest('test_get_balance'))
+helper.run_test(MainTest('test_get_UTXOs'))
 
 
 

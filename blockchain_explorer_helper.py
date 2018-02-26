@@ -65,6 +65,16 @@ def request_balance(address):
 
     return response
 
+def request_UTXOs(address):
+    request_UTXOs_url = "/addrs/{}".format(address)
+
+    response = requests.get(blockchain_cypher_url + request_UTXOs_url)
+
+    if response.status_code != 200:
+        raise RuntimeError("The server returned an error: {}".format(response.json()))
+
+    return response
+
 
 class BlockchainExplorerTest(TestCase):
     def test_request_to_block_cypher(self):
@@ -88,6 +98,20 @@ class BlockchainExplorerTest(TestCase):
         tx = get_transaction(
             "fea5cbf4efc220a5512d394279778f75937c253cac32c43047cadffc9ee4d85c").status_code
         self.assertEqual(expected, tx)
+
+        print("Should return a 200 from requesting all UTXO's")
+        print("----------------------------------------------------------------------------------------------------------------------------")
+        expected = 200
+        address = 'mhpzxr92VHqCXy3Zpat41vGgQuv9YcKzt7'
+        response = request_UTXOs(address)
+        print(response)
+
+        self.assertIsNotNone(expected, response.status_code)
+
+        print("--------------------------------------------------------------")
+        print("Should return an error on request_UTXOs since we haven't passed a valid address")
+        with self.assertRaises(RuntimeError):
+            request_UTXOs("m2PVhGePAy1GfZNotr6LeXfQ5")
 
         # print("--------------------------------------------------------------")
         # print("Should decode transaction details and return the addresse of the sending address")

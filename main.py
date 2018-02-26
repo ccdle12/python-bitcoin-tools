@@ -6,6 +6,7 @@ from helper import decode_base58, encode_base58_checksum, encode_base58, double_
 import blockchain_explorer_helper as BlockExplorer
 import PrivateKey
 from io import BytesIO
+import json
 
 
 class Main:
@@ -29,6 +30,21 @@ class Main:
 
     def get_balance(self, mainnet=False):
         return BlockExplorer.request_balance(self.get_address())
+
+    def get_UTXOs(self, mainnet=False):
+        response = BlockExplorer.request_UTXOs(self.get_address())
+        response_json = response.json()
+
+        tx_refs = response_json['txrefs']
+
+        if len(tx_refs) > 0:
+            UTXOs = list(filter(lambda x: 'spent' in x and x.get('spent') is False, tx_refs))
+        else:
+            UTXOs = []
+
+        self.UTXOs = UTXOs
+        
+        return self.UTXOs
 
     @classmethod
     def import_private_key(cls, secret):
@@ -126,7 +142,6 @@ class Main:
 
 
 class MainTest(TestCase):
-
     def test_private_key_generated(self):
         print("Should generate a private key on construction")
         wallet = Main()
@@ -332,7 +347,6 @@ class MainTest(TestCase):
         wallet1 = Main().import_private_key(
             12196958284001970079242031404833655250066517166607428365484251744560960260904)
         expected = 200
-        response = wallet1.get_balance()
         self.assertEqual(expected, wallet1.get_balance().status_code)
 
         print("Should return a the balance of wallet1 address")
@@ -342,4 +356,50 @@ class MainTest(TestCase):
         balance = satoshi_to_bitcoin(response.json()["balance"])
 
         self.assertEqual(expected, balance)
+
+    def test_get_UTXOs(self):
+        wallet1 = Main().import_private_key(
+            12196958284001970079242031404833655250066517166607428365484251744560960260904)
+
+        print("Should return a list of UTXOs greater than 0")
+        print("----------------------------------------------------------------------------------------------------------------------------")
+        response = wallet1.get_UTXOs()
+
+        self.assertTrue(len(response) > 0)
+        print(len(response))
+
+        for x in response:
+            print(x)
+
+        print("Should get a prev tx of a UTXO")
+        print("----------------------------------------------------------------------------------------------------------------------------")
+        expected = 200
+        txrefs = response
+        expected = "7c95996721bba829589a622d4bed06410ab455a8be932271d53ec9630b586c20"
+
+
+        self.assertEqual(expected, txrefs[0]['tx_hash'])
+
+        print("Should show that prev tx at 0 is unspent")
+        print("----------------------------------------------------------------------------------------------------------------------------")
+        expected = 200
+        txrefs = response
+        expected = "7c95996721bba829589a622d4bed06410ab455a8be932271d53ec9630b586c20"
+        print(txrefs[0])
+        print(txrefs[0].get('spent'))
+
+        self.assertEqual(False, txrefs[0].get('spent'))
+
+        print("Should only return a list of UTXO's of length 4")
+        print("----------------------------------------------------------------------------------------------------------------------------")
+        txrefs = response
+        expected = 1
+        print(txrefs)
+
+        self.assertEqual(expected, len(txrefs))
+
+        print("Should cache UTXOs in list in wallet object")
+        print("----------------------------------------------------------------------------------------------------------------------------")
+
+        self.assertIsNotNone(wallet1.UTXOs)
 
