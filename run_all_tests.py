@@ -105,7 +105,7 @@ from blockchain_explorer_helper import BlockchainExplorerTest
 # helper.run_test(MainTest('test_p2pkh_generation'))
 # helper.run_test(MainTest('test_p2sh_generation'))
 # helper.run_test(MainTest('test_send_tx_to_p2sh'))
-# helper.run_test(MainTest('test_get_balance'))
+helper.run_test(MainTest('test_get_balance'))
 helper.run_test(MainTest('test_get_UTXOs'))
 
 
