@@ -7,7 +7,6 @@ import blockchain_explorer_helper as BlockExplorer
 import PrivateKey
 from io import BytesIO
 import json
-from functional import seq
 from UTXO import UTXO
 
 class Main:
@@ -19,6 +18,9 @@ class Main:
             self.keys = PrivateKey.PrivateKey.import_private_key(secret)
 
         self.sec = self.keys.public_key.get_sec(compressed=True)
+
+        # Retrieve all existing UTXO's for this wallet (if any)
+        self.get_UTXOs()
 
     def get_private_key(self):
         return self.keys.get_WIF(mainnet=False)
@@ -43,13 +45,15 @@ class Main:
 
         UTXOs = []
         if response[1] == 'block_cypher':
-            tx_refs = json_response['txrefs']
+            print("TX_REFS: {}".format(json_response))
 
-            if len(tx_refs) > 0:
-                filtered = list(filter(lambda x: 'spent' in x and x.get('spent') is False, tx_refs))
-                UTXOs = list(map(lambda x: UTXO.parse(x), filtered))
-            else:
-                UTXOs = []
+            if 'txrefs' in json_response:
+                tx_refs = json_response.get('txrefs')
+
+                if len(tx_refs) > 0:
+                    filtered = list(filter(lambda x: 'spent' in x and x.get('spent') is False, tx_refs))
+                    UTXOs = list(map(lambda x: UTXO.parse(x), filtered))
+
 
         self.UTXOs = UTXOs
         return self.UTXOs
@@ -389,4 +393,24 @@ class MainTest(TestCase):
         print("----------------------------------------------------------------------------------------------------------------------------")
 
         self.assertIsNotNone(wallet1.UTXOs)
+
+    def test_send_tx(self):
+        #Address of wallet1: mhpzxr92VHqCXy3Zpat41vGgQuv9YcKzt7
+        wallet1 = Main().import_private_key(
+            12196958284001970079242031404833655250066517166607428365484251744560960260904)
+
+        print("Address: {}".format(wallet1.get_address()))
+
+        # def send_transaction(self, prev_tx, prev_index, target_addr, amount, change_amount, redeem_script=None, p2sh=False):
+        response = wallet1.send_transaction(unhexlify('7c95996721bba829589a622d4bed06410ab455a8be932271d53ec9630b586c20'), 1, 'n1adMtYYKT72d3NKjbFiE7Wv4tHSpiEC9M', 1.048, 0.001)
+
+        self.assertEqual(409, response.status_code)
+
+        print("Should find the optimum inputs according to target output amount")
+        wallet2 = Main().import_private_key(11721815747117917583098828363610524599463178642721196404024595875870538950423)
+        print("Printing UTXOs: {}".format(wallet2.UTXOs))
+        print("Printing Addres: {}".format(wallet2.get_address()))
+        
+
+
 
