@@ -1,5 +1,5 @@
 import test_helper as helper
-from ecc_test import ECC_Tests
+from ecc import ECCTests
 from FieldElement import FieldElementTest
 from Point import PointTest
 from S256Point import S256Test
@@ -41,19 +41,18 @@ helper.run_test(S256Test('test_generate_sec_pub_key'))
 helper.run_test(S256Test('test_generate_address'))
 
 
-# # #//TODO: RENAME ECC_TESTS TO ECCTest
 # # # # # # # # # # # # # # # # # # # # # #
 # # #  ECC Tests                          #
 # # # # # # # # # # # # # # # # # # # # # #
-helper.run_test(ECC_Tests('test_P'))
-helper.run_test(ECC_Tests('test_generate_priv_key'))
+helper.run_test(ECCTests('test_P'))
+helper.run_test(ECCTests('test_generate_priv_key'))
 
 # # # # Takes 9 - 10 seconds
 # # helper.run_test(ECC_Tests('test_duplicate_priv_key'))
-helper.run_test(ECC_Tests('test_generate_pub_key'))
-helper.run_test(ECC_Tests('test_point_at_infinity'))
-helper.run_test(ECC_Tests('test_pub_key_is_on_curve'))
-helper.run_test(ECC_Tests('test_pub_key_is_not_on_curve'))
+helper.run_test(ECCTests('test_generate_pub_key'))
+helper.run_test(ECCTests('test_point_at_infinity'))
+helper.run_test(ECCTests('test_pub_key_is_on_curve'))
+helper.run_test(ECCTests('test_pub_key_is_not_on_curve'))
 
 
 # # # # # # # # # # # # # # # # # # # # # # #
