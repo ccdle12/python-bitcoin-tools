@@ -41,6 +41,7 @@ class Main:
         response = BlockExplorer.request_UTXOs(self.get_address())
         json_response = response[0].json()
 
+        UTXOs = []
         if response[1] == 'block_cypher':
             tx_refs = json_response['txrefs']
 
@@ -57,7 +58,7 @@ class Main:
     def import_private_key(cls, secret):
         return cls(secret)
  
-    def send_transaction(self, prev_tx, prev_index, target_addr, amount, change_amount, redeem_script, p2sh=False):
+    def send_transaction(self, prev_tx, prev_index, target_addr, amount, change_amount, redeem_script=None, p2sh=False):
         # Initialize Inputs
         tx_inputs = []
 

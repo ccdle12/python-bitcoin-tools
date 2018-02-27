@@ -99,15 +99,6 @@ class BlockchainExplorerTest(TestCase):
             "fea5cbf4efc220a5512d394279778f75937c253cac32c43047cadffc9ee4d85c").status_code
         self.assertEqual(expected, tx)
 
-        print("Should return a 200 from requesting all UTXO's")
-        print("----------------------------------------------------------------------------------------------------------------------------")
-        expected = 200
-        address = 'mhpzxr92VHqCXy3Zpat41vGgQuv9YcKzt7'
-        response = request_UTXOs(address)
-        print(response)
-
-        self.assertIsNotNone(expected, response.status_code)
-
         print("--------------------------------------------------------------")
         print("Should return an error on request_UTXOs since we haven't passed a valid address")
         with self.assertRaises(RuntimeError):
