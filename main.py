@@ -7,7 +7,8 @@ import blockchain_explorer_helper as BlockExplorer
 import PrivateKey
 from io import BytesIO
 import json
-
+from functional import seq
+from UTXO import UTXO
 
 class Main:
     def __init__(self, secret=None):
@@ -38,17 +39,18 @@ class Main:
 
     def get_UTXOs(self, mainnet=False):
         response = BlockExplorer.request_UTXOs(self.get_address())
-        json_response = response.json()
+        json_response = response[0].json()
 
-        tx_refs = json_response['txrefs']
+        if response[1] == 'block_cypher':
+            tx_refs = json_response['txrefs']
 
-        if len(tx_refs) > 0:
-            UTXOs = list(filter(lambda x: 'spent' in x and x.get('spent') is False, tx_refs))
-        else:
-            UTXOs = []
+            if len(tx_refs) > 0:
+                filtered = list(filter(lambda x: 'spent' in x and x.get('spent') is False, tx_refs))
+                UTXOs = list(map(lambda x: UTXO.parse(x), filtered))
+            else:
+                UTXOs = []
 
         self.UTXOs = UTXOs
-
         return self.UTXOs
 
     @classmethod
@@ -372,20 +374,8 @@ class MainTest(TestCase):
 
         print("Should get a prev tx of a UTXO")
         print("----------------------------------------------------------------------------------------------------------------------------")
-        expected = 200
         expected = "7c95996721bba829589a622d4bed06410ab455a8be932271d53ec9630b586c20"
-
-
-        self.assertEqual(expected, UTXOs[0]['tx_hash'])
-
-        print("Should show that prev tx at 0 is unspent")
-        print("----------------------------------------------------------------------------------------------------------------------------")
-        expected = 200
-        expected = "7c95996721bba829589a622d4bed06410ab455a8be932271d53ec9630b586c20"
-        print(UTXOs[0])
-        print(UTXOs[0].get('spent'))
-
-        self.assertEqual(False, UTXOs[0].get('spent'))
+        self.assertEqual(expected, UTXOs[0].tx_hash)
 
         print("Should only return a list of UTXO's of length 4")
         print("----------------------------------------------------------------------------------------------------------------------------")

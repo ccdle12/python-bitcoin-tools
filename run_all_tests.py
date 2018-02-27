@@ -10,6 +10,7 @@ from Script import ScriptTest
 from main import MainTest
 from helper import HelperTest
 from blockchain_explorer_helper import BlockchainExplorerTest
+from UTXO import UTXOTest
 
 
 # # # # # # # # # # # # # # # # # # # # # #  #
@@ -105,10 +106,16 @@ from blockchain_explorer_helper import BlockchainExplorerTest
 # helper.run_test(MainTest('test_p2pkh_generation'))
 # helper.run_test(MainTest('test_p2sh_generation'))
 # helper.run_test(MainTest('test_send_tx_to_p2sh'))
-helper.run_test(MainTest('test_get_balance'))
+# helper.run_test(MainTest('test_get_balance'))
 helper.run_test(MainTest('test_get_UTXOs'))
 
-
+# # # # # # # # # # # # # # # # # # # # # # #
+# #  UTXO Test                              #
+# # # # # # # # # # # # # # # # # # # # # # #
+# helper.run_test(UTXOTest('test_can_init'))
+# helper.run_test(UTXOTest('test_can_parse'))
+# helper.run_test(UTXOTest('test_should_return_block_cypher_schema'))
+# helper.run_test(UTXOTest('test_should_return_run_time_error'))
 
 
 

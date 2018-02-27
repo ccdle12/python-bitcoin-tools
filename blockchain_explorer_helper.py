@@ -73,7 +73,7 @@ def request_UTXOs(address):
     if response.status_code != 200:
         raise RuntimeError("The server returned an error: {}".format(response.json()))
 
-    return response
+    return (response, 'block_cypher')
 
 
 class BlockchainExplorerTest(TestCase):
