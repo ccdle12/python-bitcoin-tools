@@ -12,7 +12,6 @@ B = 7
 
 
 class S256Field(FieldElement):
-
     def __init__(self, num, prime=None):
         super().__init__(num=num, prime=P)
 

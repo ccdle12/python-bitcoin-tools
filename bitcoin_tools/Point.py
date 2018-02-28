@@ -1,9 +1,9 @@
 from unittest import TestCase
 from FieldElement import FieldElement
+# import FieldElement
 
 
 class Point:
-
     def __init__(self, x, y, a, b):
         self.x = x
         self.y = y

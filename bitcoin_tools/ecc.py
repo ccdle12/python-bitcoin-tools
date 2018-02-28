@@ -1,5 +1,5 @@
 import secrets
-import Signature
+from Signature import Signature
 from S256Point import G, N, P, A, B
 from unittest import TestCase
 
@@ -21,7 +21,7 @@ class ECC:
 
         sig = (z + r * priv_key) * pow(k, N - 2, N) % N
 
-        return Signature.Signature(z, r, sig)
+        return Signature(z, r, sig)
 
 class ECCTests(TestCase):
     def test_P(self):

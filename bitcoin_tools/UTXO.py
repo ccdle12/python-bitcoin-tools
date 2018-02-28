@@ -10,6 +10,17 @@ class UTXO:
         self.confirmed = confirmed
         self.double_spend = double_spend
 
+    def __repr__(self):
+        return "\nUTXO: \ntx_hash: {}\nblock_height:{}\ntx_output:{}\nvalue:{}\nconfirmations:{}\nconfirmed:{}\ndouble_spend:{}\n".format(
+            self.tx_hash,
+            self.block_height,
+            self.tx_output,
+            self.value,
+            self.confirmations,
+            self.confirmed,
+            self.double_spend
+        )
+
     @staticmethod
     def schema_type(raw_utxo):
         if type(raw_utxo) is dict:

@@ -45,9 +45,8 @@ class Main:
 
         UTXOs = []
         if response[1] == 'block_cypher':
-            print("TX_REFS: {}".format(json_response))
-
             if 'txrefs' in json_response:
+                print("TX_REFS: {}".format(json_response.get('txrefs')))
                 tx_refs = json_response.get('txrefs')
 
                 if len(tx_refs) > 0:
@@ -395,14 +394,14 @@ class MainTest(TestCase):
         self.assertIsNotNone(wallet1.UTXOs)
 
     def test_send_tx(self):
-        #Address of wallet1: mhpzxr92VHqCXy3Zpat41vGgQuv9YcKzt7
+        # Address of wallet1: mhpzxr92VHqCXy3Zpat41vGgQuv9YcKzt7
         wallet1 = Main().import_private_key(
             12196958284001970079242031404833655250066517166607428365484251744560960260904)
 
         print("Address: {}".format(wallet1.get_address()))
 
         # def send_transaction(self, prev_tx, prev_index, target_addr, amount, change_amount, redeem_script=None, p2sh=False):
-        response = wallet1.send_transaction(unhexlify('7c95996721bba829589a622d4bed06410ab455a8be932271d53ec9630b586c20'), 1, 'n1adMtYYKT72d3NKjbFiE7Wv4tHSpiEC9M', 1.048, 0.001)
+        response = wallet1.send_transaction(unhexlify('7c95996721bba829589a622d4bed06410ab455a8be932271d53ec9630b586c20'), 1, 'n1adMtYYKT72d3NKjbFiE7Wv4tHSpiEC9M', 1.039, 0.01)
 
         self.assertEqual(409, response.status_code)
 
