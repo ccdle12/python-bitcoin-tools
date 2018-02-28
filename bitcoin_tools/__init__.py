@@ -1,2 +1,10 @@
-import S256Point
-import ecc
+from bitcoin_tools.S256Point import *
+from bitcoin_tools.FieldElement import *
+from bitcoin_tools.Point import *
+from bitcoin_tools.blockchain_explorer_helper import *
+from bitcoin_tools.ECC import *
+from bitcoin_tools.helper import *
+from bitcoin_tools.PrivateKey import *
+from bitcoin_tools.Script import *
+from bitcoin_tools.Tx import *
+from bitcoin_tools.UTXO import *

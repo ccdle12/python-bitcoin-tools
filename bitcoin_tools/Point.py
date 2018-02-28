@@ -1,7 +1,4 @@
-from unittest import TestCase
-from FieldElement import FieldElement
-# import FieldElement
-
+from bitcoin_tools.FieldElement import FieldElement
 
 class Point:
     def __init__(self, x, y, a, b):
@@ -76,54 +73,3 @@ class Point:
             product += self
 
         return product
-
-
-class PointTest(TestCase):
-    def test_points_on_curve(self):
-        with self.assertRaises(RuntimeError):
-            Point(x=2, y=7, a=5, b=7)
-
-        # Comparing for equality
-        p1 = Point(18, 77, 5, 7)
-        p2 = Point(18, 77, 5, 7)
-        self.assertEqual(p1, p2)
-
-        # Adding two points
-        p1 = Point(x=3, y=7, a=5, b=7)
-        p2 = Point(x=-1, y=-1, a=5, b=7)
-        self.assertEqual(p1 + p2, Point(x=2, y=-5, a=5, b=7))
-
-        # Adding two points by point doubling
-        a = Point(x=-1, y=1, a=5, b=7)
-        self.assertEqual(a + a, Point(x=18, y=-77, a=5, b=7))
-
-    def test_rmul(self):
-        prime = 223
-        a = FieldElement(0, prime)
-        b = FieldElement(7, prime)
-
-        multiplications = (
-            (2, 192, 105, 49, 71),
-            (2, 143, 98, 64, 168),
-            (2, 47, 71, 36, 111),
-            (4, 47, 71, 194, 51),
-            (8, 47, 71, 116, 55),
-            (21, 47, 71, None, None),
-        )
-
-        # iterate over the multiplications
-        for coefficient, _x1, _y1, _x2, _y2 in multiplications:
-            x1 = FieldElement(_x1, prime)
-            y1 = FieldElement(_y1, prime)
-            p1 = Point(x1, y1, a, b)
-
-            # initialize the second point based on whether it's the point at infinity
-            if _x2 is None:
-                p2 = Point(None, None, a, b)
-            else:
-                x2 = FieldElement(_x2, prime)
-                y2 = FieldElement(_y2, prime)
-                p2 = Point(x2, y2, a, b)
-
-            # check that the product is equal to the expected point
-            self.assertEqual(coefficient * p1, p2)

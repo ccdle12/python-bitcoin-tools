@@ -1,9 +1,8 @@
-from unittest import TestCase
 from binascii import unhexlify, hexlify
 from io import BytesIO
-from PrivateKey import PrivateKey
-from helper import decode_base58, p2pkh_script, SIGHASH_ALL
-import Tx
+from bitcoin_tools.PrivateKey import PrivateKey
+from bitcoin_tools.helper import decode_base58, p2pkh_script, SIGHASH_ALL
+# import bitcoin_tools.Tx
 
 OP_CODES = {
     0: 'OP_0',
@@ -245,34 +244,4 @@ class Script:
             raise RuntimeError('script types needs to be p2sh sig')
 
 
-class ScriptTest(TestCase):
-    def test_script_type(self):
-        print("Should return type p2pkh (pay to pub key hash)")
-        # script_pubkey = <76 : OP_DUP> <a9 : OP_HASH160> <14 : Length of hash> <88 : OP_EQUAL_VERIFY> <ac : OP_CHECKSIG>
-        script_pubkey_raw = unhexlify('76a914bc3b654dca7e56b04dca18f2566cdaf02e8d9ada88ac')
-        print("Raw bytes pub key: {}".format(script_pubkey_raw))
-        script_pubkey = Script.parse(script_pubkey_raw)
-        self.assertEqual('p2pkh', script_pubkey.type())
 
-        print("Should return type p2sh (pay to script hash)")
-        # p2sh script_pubkey
-        # script_pubkey = <a9 : OP_HASH16-> <14 : Length of hash> < hash > <87 : OP_EQUAL>
-        script_pubkey_raw = unhexlify('a91474d691da1574e6b3c192ecfb52cc8984ee7b6c5687')
-        script_pubkey = Script.parse(script_pubkey_raw)
-        self.assertEqual('p2sh', script_pubkey.type())
-
-        print("Should serialize the script and return the bytes in the pattern below")
-        # p2sh script_pubkey
-        result = hexlify(script_pubkey.serialize())
-        self.assertEqual(b'a91474d691da1574e6b3c192ecfb52cc8984ee7b6c5687', result)
-
-    # def test_p2sh(self):
-    #     print("Should create a p2sh using the existing addresses")
-
-    #     # Address 1
-    #     wallet = main.Main().import_private_key(
-    #         100897809677138163174856952607694300238573305027534078569886890414323321447504)
-
-    #     # Address 2
-    #     wallet2 = main.Main().import_private_key(
-    #         53543775883506703906499148469479904297172220131041556152219913425601595776857)

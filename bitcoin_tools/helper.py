@@ -170,14 +170,3 @@ def generate_p2sh_pub_key(address):
 
     return p2sh_script(h160)
 
-
-class HelperTest(TestCase):
-    def test_decode_base58(self):
-        print("Should decode base 58")
-        expected = b'029692862d60b5f84ba706b37939d074b6c58085'
-        self.assertEqual(expected, hexlify(decode_base58("mfke2PVhGePAy1GfZNotr6LeXfQ5nwnZTa")))
-
-    def test_bitcoin_to_satoshi(self):
-        print("Should return bitcoin to satoshi")
-        expected = 50000000
-        self.assertEqual(expected, bitcoin_to_satoshi(0.5))
