@@ -6,11 +6,11 @@ except ImportError:
     from distutils.core import setup
 
 setup(name='bitcoin_tools',
-      version='0.0.1',
+      version='0.0.2',
       description='Bitcoin Tools Library',
       author='Christopher Coverdale',
       author_email='chris.coverdale24@gmail.com',
-      url='http://github.com/vbuterin/pybitcointools',
+      url='https://github.com/ccdle12/python-bitcoin-tools',
       nclude_package_data=True,
       packages=['bitcoin_tools'],
       )
