@@ -12,7 +12,6 @@ bitcoin_tools/UTXO.py
 bitcoin_tools/__init__.py
 bitcoin_tools/blockchain_explorer_helper.py
 bitcoin_tools/helper.py
-bitcoin_tools/main.py
 bitcoin_tools.egg-info/PKG-INFO
 bitcoin_tools.egg-info/SOURCES.txt
 bitcoin_tools.egg-info/dependency_links.txt

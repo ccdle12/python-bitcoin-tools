@@ -21,7 +21,6 @@ class FieldElementTest(unittest.TestCase):
         # Since product of both nums are below the prime field, the answer is the normal addition
        
         print("Since product of both nums are below the prime field, the answer is the normal addition")
-        print("----------------------------------------------------------------------------------------\n")
         p1 = FieldElement(2, 11)
         p2 = FieldElement(3, 11)
         self.assertEqual(p1 + p2, FieldElement(5, 11))
@@ -32,7 +31,6 @@ class FieldElementTest(unittest.TestCase):
 
         # Should throw an error since passing two different primes
         print("Should throw an error since passing two different primes")
-        print("----------------------------------------------------------------------------------------\n")
         with self.assertRaises(RuntimeError):
             p1 = FieldElement(2, 11)
             p2 = FieldElement(3, 7)
@@ -40,7 +38,6 @@ class FieldElementTest(unittest.TestCase):
 
         # Should throw an error num is greater than prime number
         print("Should throw an error num is greater than prime number")
-        print("----------------------------------------------------------------------------------------\n")
         with self.assertRaises(RuntimeError):
             p1 = FieldElement(12, 11)
             p2 = FieldElement(3, 11)
@@ -53,7 +50,6 @@ class FieldElementTest(unittest.TestCase):
 
         # Should throw an error since num is less than 0, cannot have a member of the prime field below 0
         print("Should throw an error since num is less than 0")
-        print("----------------------------------------------------------------------------------------\n")
         with self.assertRaises(RuntimeError):
             p1 = FieldElement(-1, 11)
             p2 = FieldElement(3, 11)
@@ -67,7 +63,6 @@ class FieldElementTest(unittest.TestCase):
     def test_subtraction(self):
         # Should throw an error since passing two different primes
         print("Should throw an error since passing two different primes")
-        print("----------------------------------------------------------------------------------------\n")
         with self.assertRaises(RuntimeError):
             p1 = FieldElement(2, 11)
             p2 = FieldElement(3, 7)
@@ -96,7 +91,6 @@ class FieldElementTest(unittest.TestCase):
     def test_multiplication(self):
         # Should throw an error since passing two different primes
         print("Should throw an error since passing two different primes")
-        print("----------------------------------------------------------------------------------------\n")
         with self.assertRaises(RuntimeError):
             p1 = FieldElement(2, 11)
             p2 = FieldElement(3, 7)
@@ -122,9 +116,7 @@ class FieldElementTest(unittest.TestCase):
         p1 = FieldElement(9, 11)
         self.assertEqual(p1 ** 2, FieldElement(4, 11))
 
-        print(
-            "Will perform powers with an exponent greater than the prime, it should wrap around and keep the product within the field of the prime number")
-        print("----------------------------------------------------------------------------------------\n")
+        print( "Will perform powers with an exponent greater than the prime, it should wrap around and keep the product within the field of the prime number")
         p1 = FieldElement(2, 5)
         self.assertEqual(p1 ** 6, FieldElement(4, 5))
 
@@ -159,7 +151,6 @@ class FieldElementTest(unittest.TestCase):
 
     def test_division(self):
         print("\nShould throw an error since passing two different primes")
-        print("----------------------------------------------------------------------------------------\n")
         with self.assertRaises(RuntimeError):
             p1 = FieldElement(2, 11)
             p2 = FieldElement(3, 7)
@@ -317,7 +308,6 @@ class S256Test(unittest.TestCase):
             self.assertEqual(secret * G, p)
 
     def test_generate_sec_pub_key(self):
-        print("-------------------------------------------------------------------------------------------")
         priv_key = 111567339125642131892342490513530754499087578141730827863121284639663457832497
         pub_key = S256Point(4009715469895962904302745416817721540571577912364644137838095050706137667860,
                             32025336288095498019218993550383068707359510270784983226210884843871535451292)
@@ -330,7 +320,6 @@ class S256Test(unittest.TestCase):
         print("Should generate an uncompressed public key")
         self.assertEqual(expected, pub_key.get_sec(compressed=False))
 
-        print("-------------------------------------------------------------------------------------------")
         priv_key = 111567339125642131892342490513530754499087578141730827863121284639663457832497
         pub_key = S256Point(4009715469895962904302745416817721540571577912364644137838095050706137667860,
                             32025336288095498019218993550383068707359510270784983226210884843871535451292)
@@ -339,7 +328,6 @@ class S256Test(unittest.TestCase):
         # We know the Y val of the pub_key is EVEN
         self.assertTrue(pub_key.y.num % 2 == 0)
 
-        print("-------------------------------------------------------------------------------------------")
         priv_key = 52025986665857613263760395809269303684785643089926984150804307617991608511766
         pub_key = S256Point(43733605778270459583874364812384261459365992207657902102567152558096696733127,
                             64346778444748414606606796249150556060624935198788845168028978963277938956739)
@@ -348,7 +336,6 @@ class S256Test(unittest.TestCase):
         # We know the Y val of the pub_key is ODD
         self.assertFalse(pub_key.y.num % 2 == 0)
 
-        print("-------------------------------------------------------------------------------------------")
         priv_key = 111567339125642131892342490513530754499087578141730827863121284639663457832497
         pub_key = S256Point(4009715469895962904302745416817721540571577912364644137838095050706137667860,
                             32025336288095498019218993550383068707359510270784983226210884843871535451292)
@@ -361,7 +348,6 @@ class S256Test(unittest.TestCase):
         print("There should be a valid EVEN compressed SEC format pub_key")
         self.assertEqual(expected, pub_key.get_sec(compressed=True))
 
-        print("-------------------------------------------------------------------------------------------")
         priv_key = 52025986665857613263760395809269303684785643089926984150804307617991608511766
         pub_key = S256Point(43733605778270459583874364812384261459365992207657902102567152558096696733127,
                             64346778444748414606606796249150556060624935198788845168028978963277938956739)
@@ -374,7 +360,6 @@ class S256Test(unittest.TestCase):
         print("There should be a valid ODD compressed SEC format pub_key")
         self.assertEqual(expected, pub_key.get_sec(compressed=True))
 
-        print("-------------------------------------------------------------------------------------------")
         # It should raise an error since we are passing None
         priv_key = 111567339125642131892342490513530754499087578141730827863121284639663457832497
         pub_key = S256Point(None,
@@ -384,7 +369,6 @@ class S256Test(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             pub_key.get_sec(compressed=True)
 
-        print("-------------------------------------------------------------------------------------------")
         # It should raise an error since points not on curve
         priv_key = 111567339125642131892342490513530754499087578141730827863121284639663457832497
 
@@ -408,7 +392,6 @@ class S256Test(unittest.TestCase):
 
         self.assertEqual(expected, testnet_address)
 
-        print("-------------------------------------------------------------------------------------------")
         priv_key = 85766691447432562285107349766825790927431446373602486150911666480754112492464
         pub_key = S256Point(43651727216793576570341989570883305974491642311510342469928224726666590034225,
                             109857391791750504773247734335453148952192151977881622854599464318335318347795)
@@ -423,7 +406,6 @@ class S256Test(unittest.TestCase):
         print("It should return the mainnet address")
         self.assertEqual(expected, mainnet_address)
 
-        print("-------------------------------------------------------------------------------------------")
         priv_key = 85766691447432562285107349766825790927431446373602486150911666480754112492464
         pub_key = S256Point(43651727216793576570341989570883305974491642311510342469928224726666590034225,
                             109857391791750504773247734335453148952192151977881622854599464318335318347795)
@@ -435,7 +417,6 @@ class S256Test(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             pub_key.get_address("0360820086ce7d8015b537abb9937805b49e178db9151cfe43d0aa529919481931", mainnet=True)
 
-        print("-------------------------------------------------------------------------------------------")
         priv_key = 85766691447432562285107349766825790927431446373602486150911666480754112492464
         pub_key = S256Point(43651727216793576570341989570883305974491642311510342469928224726666590034225,
                             109857391791750504773247734335453148952192151977881622854599464318335318347795)
@@ -458,24 +439,20 @@ class BlockchainExplorerTest(unittest.TestCase):
         expected = "BTC.test3"
         self.assertEqual(expected, ping().json()["name"])
 
-        print("--------------------------------------------------------------")
         print("Should make request for the balance of the address passed")
         expected = 200
         self.assertEqual(expected, request_balance("mfke2PVhGePAy1GfZNotr6LeXfQ5nwnZTa").status_code)
 
-        print("--------------------------------------------------------------")
         print("Should return an error since we haven't passed a valid address")
         with self.assertRaises(RuntimeError):
             request_balance("m2PVhGePAy1GfZNotr6LeXfQ5nw")
 
-        print("--------------------------------------------------------------")
         print("Should make request for the balance of the address passed")
         expected = 200
         tx = get_transaction(
             "fea5cbf4efc220a5512d394279778f75937c253cac32c43047cadffc9ee4d85c").status_code
         self.assertEqual(expected, tx)
 
-        print("--------------------------------------------------------------")
         print("Should return an error on request_UTXOs since we haven't passed a valid address")
         with self.assertRaises(RuntimeError):
             request_UTXOs("m2PVhGePAy1GfZNotr6LeXfQ5")
@@ -504,6 +481,7 @@ class ECCTests(unittest.TestCase):
     # # # # # # # # # # # # # # # # # # # # # # #
     def test_generate_priv_key(self):
         priv_key = ECC().generate_priv_key()
+
         print("Private key generated should be above 0 and below ECC.N")
         self.assertTrue(0 < priv_key < N)
 
@@ -529,11 +507,13 @@ class ECCTests(unittest.TestCase):
     def test_generate_pub_key(self):
         priv_key = ECC().generate_priv_key()
         pub_key = ECC().generate_pub_key(priv_key)
+
         print("There should be a x val of pub_key > 0")
         self.assertTrue(0 < pub_key.x.num)
 
     def test_point_at_infinity(self):
         point_at_infinity = N * G
+
         print("Point at Infinity, should return None for both x and y")
         self.assertEqual(None, point_at_infinity.x)
         self.assertEqual(None, point_at_infinity.y)
@@ -542,12 +522,14 @@ class ECCTests(unittest.TestCase):
         priv_key = ECC().generate_priv_key()
         pub_key = ECC().generate_pub_key(priv_key)
         print(pub_key.x, pub_key.y)
+
         print("Both x and y should be on the curve, checking if pub_key is on curve")
         self.assertEqual(True, ECC().is_on_curve(pub_key.x.num, pub_key.y.num))
 
     def test_pub_key_is_not_on_curve(self):
         pub_key = (20700948478913772076119439904629995041653958252327787830786676775719940102654,
                    5554562626338682950266833423860784775451683510376504490669758056891525878098)
+
         print("Should return false, y has been tampered with, so it is not a valid point on the curve")
         self.assertEqual(False, ECC().is_on_curve(pub_key[0], pub_key[1]))
 
@@ -578,11 +560,12 @@ class PrivateKeyTest(TestCase):
 
         print("Private Key should not be None")
         self.assertIsNotNone(priv_key)
+
         print("Private key should be greater than 0 and less than N")
         self.assertTrue(0 < priv_key < N)
+
         print("Private key should NOT be greater than N")
         self.assertFalse(priv_key > N)
-        print("----------------------------------------------------------")
 
         point_at_infinity = N * G
         print("Point at Infinity, should return None for both x and y")
@@ -615,7 +598,6 @@ class PrivateKeyTest(TestCase):
         print("pub_key has been generated")
         self.assertIsNotNone(pub_key)
 
-        print("----------------------------------------------------------")
         print("Both x and y should be on the curve, checking if pub_key is on curve")
         self.assertTrue(priv_key.is_on_curve())
 
@@ -625,45 +607,37 @@ class PrivateKeyTest(TestCase):
         prefix = b'\x80'
         s = secret.to_bytes(32, 'big')
 
-        print("----------------------------------------------------------")
         print("Should create wallet import format for mainnet uncompressed")
         expected = "5JVxGiHdVvu7XTr1PMRb8gGE2vdFYQnsErmJMFrUXSF5rWf6sPh"
         self.assertEqual(expected, encode_base58_checksum(prefix + s))
 
-        print("----------------------------------------------------------")
         print("Should create wallet import format for mainnet compressed")
         expected = "KzEnxMEQ6gu1oTVJhf9XetJCXVh1Be1SkAeXaQZNVLRARGK6inwT"
         self.assertEqual(expected, encode_base58_checksum(prefix + s + b'\x01'))
 
-        print("----------------------------------------------------------")
         print("Should create wallet import format for testnet uncompressed")
         prefix = b'\xef'
         expected = "92GarT7B69yFVXMJ1hKW1GpBgayxhaL4aodFRtCysAz8dWAsiBQ"
         self.assertEqual(expected, encode_base58_checksum(prefix + s))
 
-        print("----------------------------------------------------------")
         print("Should create wallet import format for testnet uncompressed")
         prefix = b'\xef'
         expected = "cQbnRGEFXkbGxtxa64xf2CoG9izQr678pCnzgq1szT5Ag1U7rZ88"
         self.assertEqual(expected, encode_base58_checksum(prefix + s + b'\x01'))
 
-        print("----------------------------------------------------------")
         print("Should create wallet import format for mainnet uncompressed")
         expected = "5"
         self.assertEqual(expected, PrivateKey().get_WIF(compressed=False, mainnet=True)[:1])
 
-        print("----------------------------------------------------------")
         print("Should create wallet import format for mainnet compressed")
         expected = "K"
         expected2 = "L"
         self.assertTrue(expected or expected2 == PrivateKey().get_WIF(compressed=True, mainnet=True)[:1])
 
-        print("----------------------------------------------------------")
         print("Should create wallet import format for testnet and uncompressed")
         expected = "9"
         self.assertEqual(expected, PrivateKey().get_WIF(compressed=False, mainnet=False)[:1])
 
-        print("----------------------------------------------------------")
         print("Should create wallet import format for testnet and compressed")
         expected = "c"
         self.assertEqual(expected, PrivateKey().get_WIF(compressed=True, mainnet=False)[:1])
@@ -721,19 +695,15 @@ class TxTest(unittest.TestCase):
         print("Should return the script sig of the second input")
         self.assertEqual(script_sig, hexlify(parsed_tx.tx_ins[1].script_sig.serialize()).decode('ascii'))
 
-        print("-------------------------------------------------------------------------------------------")
         print("Amount of inputs should be 4")
         self.assertEqual(4, len(parsed_tx.tx_ins))
 
-        print("-------------------------------------------------------------------------------------------")
         print("Previous hash/transaction should be 32 bytes in length")
         self.assertEqual(32 * 2, len(hexlify(parsed_tx.tx_ins[0].prev_hash).decode('ascii')))
 
-        print("-------------------------------------------------------------------------------------------")
         print("First output amount should be 100273 Satoshis ")
         self.assertEqual(1000273, parsed_tx.tx_outs[0].amount)
 
-        print("-------------------------------------------------------------------------------------------")
         print("First output amount should be 0.01000273 Bitcoin")
         self.assertEqual(0.01000273, satoshi_to_bitcoin(parsed_tx.tx_outs[0].amount))
 
@@ -743,14 +713,10 @@ class TxTest(unittest.TestCase):
 
         tx = Tx.parse(raw_tx)
         expected_version = 1
-        print("-------------------------------------------------------------------------------------------")
         print("Should return unserialized version number as int")
         self.assertEqual(expected_version, tx.version)
 
-        print("-------------------------------------------------------------------------------------------")
-        print(
-            "Should return the exact same byte values as tx_raw, since we are serializing the data held in the Tx Object")
-
+        print("Should return the exact same byte values as tx_raw, since we are serializing the data held in the Tx Object")
         tx_serialized = tx.serialize()
         self.assertEqual(tx_serialized, raw_tx)
 
@@ -825,5 +791,41 @@ class UTXOTest(unittest.TestCase):
             utxo_object = UTXO.parse({'block_height': 1283283, 'tx_input_n': -1, 'tx_output_n': 1, 'value': 104900000, 'ref_balance': 211900000, 'spent': False, 'confirmations': 3326, 'confirmed': '2018-02-17T19:10:32Z', 'double_spend': False})
 
 
+class SignatureTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        print("\n----------------------------------------------------------------------------------------")
+        print("!!! Starting Signature Tests !!!")
+        print("----------------------------------------------------------------------------------------\n")
+
+
+    def test_generating_signature(self):
+        print("Should pass as valid Signature object, test will assert sig IS NOT NONE")
+
+        r = 65768643913645672968978426589689987237850374542483501912088659345491159391021
+        s = 55618899300744280687710599871980893657541124572884031214465422719409044157728
+        sig = Signature(r, s)
+
+        self.assertIsNotNone(sig)
+        self.assertEqual(sig.r, r)
+
+        print("Should pass and return valid DER signature")
+        expected = "30450221009167bbb944c67d650cab2f3d5cbd06c2391977de478832c50d4af00b0a2f9b2d02207af72e71cecf43022204cce257af9625f799d5a90ed904c42b903771dd217520"
+        self.assertEqual(expected, hexlify(sig.der()).decode('ascii'))
+
+
+        print("Should raise error length of signature is too short")
+        with self.assertRaises(RuntimeError):
+            sig = Signature.parse(unhexlify(
+                "30450221009167bbb944c67d650cab2f3d5cbd06c2391977de478832c50d4af00b0a2f9b2d02207af72e71cecf43022204cce257af9625f799d5a90ed904c42b903771dd2175"))
+
+
+        print("Should return bad signature")
+        with self.assertRaises(RuntimeError):
+            sig = Signature.parse(unhexlify(
+                "20450221009167bbb944c67d650cab2f3d5cbd06c2391977de478832c50d4af00b0a2f9b2d02207af72e71cecf43022204cce257af9625f799d5a90ed904c42b903771dd2175"))
+
+
+        sig.der()
 if __name__ == '__main__':
     unittest.main()

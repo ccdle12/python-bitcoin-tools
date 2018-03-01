@@ -2,7 +2,6 @@ from binascii import unhexlify, hexlify
 from io import BytesIO
 from bitcoin_tools.PrivateKey import PrivateKey
 from bitcoin_tools.helper import decode_base58, p2pkh_script, SIGHASH_ALL
-# import bitcoin_tools.Tx
 
 OP_CODES = {
     0: 'OP_0',
@@ -212,7 +211,6 @@ class Script:
     def der_signature(self, index=0):
         '''index isn't used for p2pkh, for p2sh, means one of m sigs'''
         sig_type = self.type()
-        print("Sig type: {}".format(sig_type))
         if sig_type == 'p2pkh sig':
             return self.elements[0]
         elif sig_type == 'p2sh sig':
@@ -223,10 +221,8 @@ class Script:
     def sec_pubkey(self, index=0):
         '''index isn't used for p2pkh, for p2sh, means one of n pubkeys'''
         sig_type = self.type()
-        print("Sig_type: {}".format(sig_type))
         if sig_type == 'p2pkh sig':
             # Returns the Pub Key (A SEC public key)
-            print(hexlify(self.elements[1]))
             return self.elements[1]
         elif sig_type == 'p2sh sig':
             # HACK: assumes p2sh is a multisig
@@ -236,8 +232,6 @@ class Script:
     def redeem_script(self):
         sig_type = self.type()
         #If the type is p2sh signature, return the last object which is the redeem script
-        # print("Printing Elements: {}".format(self.elements))
-        # print("Elements trying to return a redeem script: {}".format(self.elements[-1]))
         if sig_type == 'p2sh sig':
             return self.elements[-1]
         else:

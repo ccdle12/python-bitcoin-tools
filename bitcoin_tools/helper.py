@@ -108,8 +108,6 @@ def decode_base58(address):
     # Iterate over each string, in the address, c is the integer value of the ascii character
     for c in address.encode('ascii'):
         num *= 58
-        # print("c subsection not found: {}".format(c))
-        # print("BASE 58 ALPHABET: {}".format(BASE58_ALPHABET.index(c)))
         num += BASE58_ALPHABET.index(c)
 
     combined = num.to_bytes(25, byteorder='big')
@@ -129,7 +127,6 @@ def p2pkh_script(h160):
 
 def p2sh_script(h160):
     # Takes the h160 of an address and inserts it into p2sh scriptPubKey format
-    print("H160 of script: {}".format(hexlify(h160)))
     return b'\xa9\x14' + h160 + b'\x87'
 
 def generate_reedemScript(owners_sec, list_of_pub_keys):

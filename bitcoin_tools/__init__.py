@@ -8,3 +8,4 @@ from bitcoin_tools.PrivateKey import *
 from bitcoin_tools.Script import *
 from bitcoin_tools.Tx import *
 from bitcoin_tools.UTXO import *
+from bitcoin_tools.Signature import *

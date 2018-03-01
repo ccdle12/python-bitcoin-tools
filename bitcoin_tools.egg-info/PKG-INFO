@@ -1,11 +1,10 @@
 Metadata-Version: 1.0
 Name: bitcoin-tools
-Version: 0.0.1
+Version: 0.0.2
 Summary: Bitcoin Tools Library
-Home-page: http://github.com/vbuterin/pybitcointools
+Home-page: https://github.com/ccdle12/python-bitcoin-tools
 Author: Christopher Coverdale
 Author-email: chris.coverdale24@gmail.com
 License: UNKNOWN
-Description-Content-Type: UNKNOWN
 Description: UNKNOWN
 Platform: UNKNOWN
