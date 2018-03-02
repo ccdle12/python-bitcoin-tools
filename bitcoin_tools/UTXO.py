@@ -9,10 +9,10 @@ class UTXO:
         self.double_spend = double_spend
 
     def __repr__(self):
-        return "\nUTXO: \ntx_hash: {}\nblock_height:{}\ntx_output:{}\nvalue:{}\nconfirmations:{}\nconfirmed:{}\ndouble_spend:{}\n".format(
+        return "\nUTXO: \ntx_hash: {}\nblock_height:{}\ntx_index:{}\nvalue:{}\nconfirmations:{}\nconfirmed:{}\ndouble_spend:{}\n".format(
             self.tx_hash,
             self.block_height,
-            self.tx_output,
+            self.tx_index,
             self.value,
             self.confirmations,
             self.confirmed,
