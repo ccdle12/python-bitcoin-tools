@@ -1,8 +1,8 @@
 class UTXO:
-    def __init__(self, tx_hash, block_height, tx_output, value, confirmations, confirmed, double_spend):
+    def __init__(self, tx_hash, block_height, tx_index, value, confirmations, confirmed, double_spend):
         self.tx_hash = tx_hash
         self.block_height = block_height
-        self.tx_output = tx_output
+        self.tx_index = tx_index
         self.value = value
         self.confirmations = confirmations
         self.confirmed = confirmed
@@ -25,6 +25,7 @@ class UTXO:
             if ('tx_hash' in raw_utxo
                 and 'block_height' in raw_utxo  
                 and 'tx_input_n' in raw_utxo 
+                and 'tx_output_n' in raw_utxo
                 and 'value' in raw_utxo 
                 and 'ref_balance' in raw_utxo 
                 and 'spent' in raw_utxo 
@@ -42,7 +43,7 @@ class UTXO:
         if schema_type == 'block_cypher':
             return cls(tx_hash=raw_utxo.get('tx_hash'), 
                     block_height=raw_utxo.get('block_height'), 
-                    tx_output=raw_utxo.get('tx_output'),
+                    tx_index=raw_utxo.get('tx_output_n'),
                     value=raw_utxo.get('value'), 
                     confirmations=raw_utxo.get('confirmations'),
                     confirmed=raw_utxo.get('confirmed'), 

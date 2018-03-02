@@ -1,17 +1,21 @@
 import json
 import requests
 
-blockchain_cypher_url = "https://api.blockcypher.com/v1/btc/test3"
-token_url = "?token=5757068b376143b8aa5f7fc137dc2351"
+# 1st case -> move to its own Class?
+block_cypher_url = "https://api.blockcypher.com/v1/btc/test3"
+block_cypher_token = "?token=5757068b376143b8aa5f7fc137dc2351"
 
+# 2nd case -> move to its own Class?
+block_trail_url = "https://api.blocktrail.com/v1/tBTC"
+block_trail_token = "?api_key=8a2a363be9edf703cba639d7e3f8a1831978f483"
 
 def ping():
-    return requests.get(blockchain_cypher_url)
+    return requests.get(block_cypher_url)
 
 
 def get_balance(address):
     balance_url = "/addrs/{}/balance".format(address)
-    response = requests.get(blockchain_cypher_url + balance_url)
+    response = requests.get(block_cypher_url + balance_url)
 
     if response.status_code != 200:
         raise RuntimeError("The server returned an error: {}".format(response.json()))
@@ -24,7 +28,7 @@ def send_tx(raw_tx):
 
     json_tx = create_json_tx(raw_tx)
 
-    response = requests.post(blockchain_cypher_url + send_tx_url + token_url, data=json_tx)
+    response = requests.post(block_cypher_url + send_tx_url + block_cypher_token, data=json_tx)
 
     if response.status_code == 400:
         raise RuntimeError("Error sending the tx: {}".format(response.json()))
@@ -35,7 +39,7 @@ def send_tx(raw_tx):
 def get_transaction(transaction_hash):
     get_tx_url = "/txs/{}".format(transaction_hash)
 
-    response = requests.get(blockchain_cypher_url + get_tx_url)
+    response = requests.get(block_cypher_url + get_tx_url)
 
     return response
 
@@ -45,7 +49,7 @@ def decode_transaction(raw_tx):
 
     json_tx = create_json_tx(raw_tx)
 
-    response = requests.post(blockchain_cypher_url + decode_tx_url + token_url, data=json_tx)
+    response = requests.post(block_cypher_url + decode_tx_url + block_cypher_token, data=json_tx)
 
     return response
 
@@ -55,19 +59,26 @@ def create_json_tx(raw_tx):
     return json.dumps(tx_object)
 
 def request_balance(address):
+    # 1st case
     request_balance_url = "/addrs/{}/balance".format(address)
 
-    response = requests.get(blockchain_cypher_url + request_balance_url)
+    response = requests.get(block_cypher_url + request_balance_url)
 
     if response.status_code != 200:
         raise RuntimeError("The server returned an error: {}".format(response.json()))
+
+    # 2nd case
+    # Block trail does not have a balance request
+    # request_utxos_url = "/address/{}/unspent-outputs".format(address)
+
+    # response = requests.get(block_trail_url + request_utxos_url + block_trail_token)
 
     return response
 
 def request_UTXOs(address):
     request_UTXOs_url = "/addrs/{}".format(address)
 
-    response = requests.get(blockchain_cypher_url + request_UTXOs_url)
+    response = requests.get(block_cypher_url + request_UTXOs_url)
 
     if response.status_code != 200:
         raise RuntimeError("The server returned an error: {}".format(response.json()))

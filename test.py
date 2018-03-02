@@ -465,6 +465,14 @@ class BlockchainExplorerTest(unittest.TestCase):
         # print(response)
         # self.assertEqual(expected, response['addresses'][1])
 
+    # def test_request_block_trail(self):
+    #     print("Should only test block trail API requests")
+    #     response = request_balance("mfke2PVhGePAy1GfZNotr6LeXfQ5nwnZTa")
+    #     status_code = response.status_code
+    #     print(response.json())
+    #     self.assertEqual(200, status_code)
+
+
 class ECCTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -757,7 +765,7 @@ class UTXOTest(unittest.TestCase):
         print("Can Init a UTXO object")
         UTXOObj = UTXO(tx_hash='7c95996721bba829589a622d4bed06410ab455a8be932271d53ec9630b586c20',
                                   block_height=1283283,   
-                                  tx_output=1,
+                                  tx_index=1,
                                   value=104900000,
                                   confirmations=3322,
                                   confirmed="2018-02-17T19:10:32Z",
