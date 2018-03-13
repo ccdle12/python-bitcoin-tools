@@ -6,7 +6,7 @@ except ImportError:
     from distutils.core import setup
 
 setup(name='bitcoin_tools',
-      version='0.0.4',
+      version='0.0.6',
       description='Bitcoin Tools Library, WIP: CURRENTLY ONLY USED FOR TESTNET',
       author='Christopher Coverdale',
       author_email='chris.coverdale24@gmail.com',

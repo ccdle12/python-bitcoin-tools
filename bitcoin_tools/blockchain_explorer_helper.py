@@ -2,8 +2,9 @@ import json
 import requests
 
 # 1st case -> move to its own Class?
+# 5757068b376143b8aa5f7fc137dc2351
 block_cypher_url = "https://api.blockcypher.com/v1/btc/test3"
-block_cypher_token = "?token=5757068b376143b8aa5f7fc137dc2351"
+block_cypher_token = "?token=c355cd4305b042a980c6b83c4e21bb4d"
 
 # 2nd case -> move to its own Class?
 block_trail_url = "https://api.blocktrail.com/v1/tBTC"
