@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: bitcoin-tools
-Version: 0.0.7
+Version: 0.0.10
 Summary: Bitcoin Tools Library, WIP: CURRENTLY ONLY USED FOR TESTNET
 Home-page: https://github.com/ccdle12/python-bitcoin-tools
 Author: Christopher Coverdale

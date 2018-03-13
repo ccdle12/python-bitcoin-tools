@@ -823,6 +823,7 @@ class UTXOTest(unittest.TestCase):
 
         self.assertEqual('block_trail', schema_type)
 
+
 class SignatureTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

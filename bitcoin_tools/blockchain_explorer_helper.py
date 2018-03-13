@@ -65,10 +65,8 @@ def request_balance(address):
 
     try:
         response = requests.get(block_cypher_url + request_balance_url)
-
-        if response.status_code != 200:
-            raise RuntimeError("The server returned an error: {}".format(response.json()))
-
+        # if response.status_code != 200:
+            # raise RuntimeError("The server returned an error: {}".format(response.json()))
     except:
         raise RuntimeError("API Limit reached: {}".format(response.json()))
 
@@ -78,10 +76,8 @@ def request_balance(address):
         request_UTXOs_url = "/address/{}/unspent-outputs".format(address)
 
         response = requests.get(block_trail_url + request_UTXOs_url + block_trail_token)
-
-        if response.status_code != 200:
-            raise RuntimeError("The server returned an error: {}".format(response.json()))
-
+        # if response.status_code != 200:
+            # raise RuntimeError("The server returned an error: {}".format(response.json()))
     except:
         raise RuntimeError("API Limit reached: {}".format(response.json()))
         
@@ -100,8 +96,8 @@ def request_UTXOs(address):
 
         response = requests.get(block_cypher_url + request_UTXOs_url)
 
-        if response.status_code != 200:
-            raise RuntimeError("The server returned an error: {}".format(response.json()))
+        # if response.status_code != 200:
+            # raise RuntimeError("The server returned an error: {}".format(response.json()))
 
         schema = 'block_cypher'
     except:
@@ -112,9 +108,10 @@ def request_UTXOs(address):
     try: 
         request_UTXOs_url = "/address/{}/unspent-outputs".format(address)
         response = requests.get(block_trail_url + request_UTXOs_url + block_trail_token)
+        print("Block_trail resp: {}".format(response.json()))
 
-        if response.status_code != 200:
-            raise RuntimeError("The server returned an error: {}".format(response.json()))
+        # if response.status_code != 200:
+            # raise RuntimeError("The server returned an error: {}".format(response.json()))
 
         schema = 'block_trail'
 
