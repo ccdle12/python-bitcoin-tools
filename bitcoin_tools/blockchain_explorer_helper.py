@@ -91,17 +91,17 @@ def request_UTXOs(address):
     schema = None
 
     # 1st case
-    try: 
-        request_UTXOs_url = "/addrs/{}".format(address)
+    # try: 
+    #     request_UTXOs_url = "/addrs/{}".format(address)
 
-        response = requests.get(block_cypher_url + request_UTXOs_url)
+    #     response = requests.get(block_cypher_url + request_UTXOs_url)
 
-        # if response.status_code != 200:
-            # raise RuntimeError("The server returned an error: {}".format(response.json()))
+    #     # if response.status_code != 200:
+    #         # raise RuntimeError("The server returned an error: {}".format(response.json()))
 
-        schema = 'block_cypher'
-    except:
-        raise RuntimeError("API Limit reached: {}".format(response.json()))
+    #     schema = 'block_cypher'
+    # except:
+    #     raise RuntimeError("API Limit reached: {}".format(response.json()))
 
 
     # 2nd case
