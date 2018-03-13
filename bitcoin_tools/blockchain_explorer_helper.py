@@ -61,14 +61,14 @@ def create_json_tx(raw_tx):
 
 def request_balance(address):
     # 1st case
-    request_balance_url = "/addrs/{}/balance".format(address)
+    # request_balance_url = "/addrs/{}/balance".format(address)
 
-    try:
-        response = requests.get(block_cypher_url + request_balance_url)
-        # if response.status_code != 200:
-            # raise RuntimeError("The server returned an error: {}".format(response.json()))
-    except:
-        raise RuntimeError("API Limit reached: {}".format(response.json()))
+    # try:
+    #     response = requests.get(block_cypher_url + request_balance_url)
+    #     # if response.status_code != 200:
+    #         # raise RuntimeError("The server returned an error: {}".format(response.json()))
+    # except:
+    #     raise RuntimeError("API Limit reached: {}".format(response.json()))
 
     # 2nd case
     # Block trail does not have a balance request
