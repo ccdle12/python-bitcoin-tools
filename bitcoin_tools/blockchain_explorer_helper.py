@@ -74,10 +74,10 @@ def request_balance(address):
 
     # 2nd case
     # Block trail does not have a balance request
-    request_utxos_url = "/address/{}/unspent-outputs".format(address)
-
     try:
-        response = requests.get(block_trail_url + request_utxos_url + block_trail_token)
+        request_UTXOs_url = "/address/{}/unspent-outputs".format(address)
+
+        response = requests.get(block_trail_url + request_UTXOs_url + block_trail_token)
 
         if response.status_code != 200:
             raise RuntimeError("The server returned an error: {}".format(response.json()))
@@ -90,11 +90,35 @@ def request_balance(address):
     return response
 
 def request_UTXOs(address):
-    request_UTXOs_url = "/addrs/{}".format(address)
 
-    response = requests.get(block_cypher_url + request_UTXOs_url)
+    response = None
+    schema = None
 
-    if response.status_code != 200:
-        raise RuntimeError("The server returned an error: {}".format(response.json()))
+    # 1st case
+    try: 
+        request_UTXOs_url = "/addrs/{}".format(address)
 
-    return (response, 'block_cypher')
+        response = requests.get(block_cypher_url + request_UTXOs_url)
+
+        if response.status_code != 200:
+            raise RuntimeError("The server returned an error: {}".format(response.json()))
+
+        schema = 'block_cypher'
+    except:
+        raise RuntimeError("API Limit reached: {}".format(response.json()))
+
+
+    # 2nd case
+    try: 
+        request_UTXOs_url = "/address/{}/unspent-outputs".format(address)
+        response = requests.get(block_trail_url + request_UTXOs_url + block_trail_token)
+
+        if response.status_code != 200:
+            raise RuntimeError("The server returned an error: {}".format(response.json()))
+
+        schema = 'block_trail'
+
+    except:
+        raise RuntimeError("API Limit reached: {}".format(response.json()))    
+
+    return (response, schema)

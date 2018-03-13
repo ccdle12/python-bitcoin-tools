@@ -457,6 +457,13 @@ class BlockchainExplorerTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             request_UTXOs("m2PVhGePAy1GfZNotr6LeXfQ5")
 
+        print("Should return a UTXO block_trail")
+        expected = "block_trail"
+        response = request_UTXOs("mfke2PVhGePAy1GfZNotr6LeXfQ5nwnZTa")
+        print(response[0].json())
+
+        self.assertEqual(expected, response[1])
+
         # print("--------------------------------------------------------------")
         # print("Should decode transaction details and return the addresse of the sending address")
         # tx_to_decode = "01000000015cd8e49efcdfca4730c432ac3c257c93758f777942392d51a520c2eff4cba5fe010000008b4230333566623364616638353538383831616232366530393535653936656563373539333763353133643733306335656635383636623461326130626435323230363047304402203608e89b94feab1cc26f5350dfaaaa5a3d8feee8213e46305924e573e2cf19240220170415f4042ec1e9b3ee8edb51bb338277b5ded56595959289edb8d301bf782501ffffffff0280f0fa02000000001976a914ada5b5ba34eb8774388d0ac30c5bc3c8e8afae0388ac60cd4906000000001976a914029692862d60b5f84ba706b37939d074b6c5808588ac00000000"
@@ -799,12 +806,29 @@ class UTXOTest(unittest.TestCase):
             utxo_object = UTXO.parse({'block_height': 1283283, 'tx_input_n': -1, 'tx_output_n': 1, 'value': 104900000, 'ref_balance': 211900000, 'spent': False, 'confirmations': 3326, 'confirmed': '2018-02-17T19:10:32Z', 'double_spend': False})
 
 
+    def test_should_return_block_trail_schema(self):
+        print("Should return 'block_trail' schema")
+        # Parse Block Cypher schema to create a utxo_object (the schema is not being used)
+        utxo_object = UTXO.parse({'tx_hash': '7c95996721bba829589a622d4bed06410ab455a8be932271d53ec9630b586c20', 'block_height': 1283283, 'tx_input_n': -1, 'tx_output_n': 1, 'value': 104900000, 'ref_balance': 211900000, 'spent': False, 'confirmations': 3326, 'confirmed': '2018-02-17T19:10:32Z', 'double_spend': False})
+
+        schema_type = utxo_object.schema_type({'hash': 'fea5cbf4efc220a5512d394279778f75937c253cac32c43047cadffc9ee4d85c', 'time': '2018-02-04T12:29:01+0000', 'confirmations': 12468, 'is_coinbase': False, 'value': 156000000, 'index': 1, 'address': 'mfke2PVhGePAy1GfZNotr6LeXfQ5nwnZTa', 'type': 'pubkeyhash', 'multisig': None, 'script': 'OP_DUP OP_HASH160 029692862d60b5f84ba706b37939d074b6c58085 OP_EQUALVERIFY OP_CHECKSIG', 'script_hex': '76a914029692862d60b5f84ba706b37939d074b6c5808588ac'})
+
+        self.assertEqual('block_trail', schema_type)
+
+    def test_should_parse_block_trail(self):
+        print("Should parse the 'block_trail' schema")
+        uxto_object = UTXO.parse({'hash': 'fea5cbf4efc220a5512d394279778f75937c253cac32c43047cadffc9ee4d85c', 'time': '2018-02-04T12:29:01+0000', 'confirmations': 12468, 'is_coinbase': False, 'value': 156000000, 'index': 1, 'address': 'mfke2PVhGePAy1GfZNotr6LeXfQ5nwnZTa', 'type': 'pubkeyhash', 'multisig': None, 'script': 'OP_DUP OP_HASH160 029692862d60b5f84ba706b37939d074b6c58085 OP_EQUALVERIFY OP_CHECKSIG', 'script_hex': '76a914029692862d60b5f84ba706b37939d074b6c5808588ac'})
+        
+        schema_type = uxto_object.schema_type({'hash': 'fea5cbf4efc220a5512d394279778f75937c253cac32c43047cadffc9ee4d85c', 'time': '2018-02-04T12:29:01+0000', 'confirmations': 12468, 'is_coinbase': False, 'value': 156000000, 'index': 1, 'address': 'mfke2PVhGePAy1GfZNotr6LeXfQ5nwnZTa', 'type': 'pubkeyhash', 'multisig': None, 'script': 'OP_DUP OP_HASH160 029692862d60b5f84ba706b37939d074b6c58085 OP_EQUALVERIFY OP_CHECKSIG', 'script_hex': '76a914029692862d60b5f84ba706b37939d074b6c5808588ac'})
+
+        self.assertEqual('block_trail', schema_type)
+
 class SignatureTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         print("\n----------------------------------------------------------------------------------------")
         print("!!! Starting Signature Tests !!!")
-        print("----------------------------------------------------------------------------------------\n")
+        print("---------------------------------------------------------------------------------------\n")
 
 
     def test_generating_signature(self):
