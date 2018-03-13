@@ -63,16 +63,29 @@ def request_balance(address):
     # 1st case
     request_balance_url = "/addrs/{}/balance".format(address)
 
-    response = requests.get(block_cypher_url + request_balance_url)
+    try:
+        response = requests.get(block_cypher_url + request_balance_url)
 
-    if response.status_code != 200:
-        raise RuntimeError("The server returned an error: {}".format(response.json()))
+        if response.status_code != 200:
+            raise RuntimeError("The server returned an error: {}".format(response.json()))
+
+    except:
+        raise RuntimeError("API Limit reached: {}".format(response.json()))
 
     # 2nd case
     # Block trail does not have a balance request
-    # request_utxos_url = "/address/{}/unspent-outputs".format(address)
+    request_utxos_url = "/address/{}/unspent-outputs".format(address)
 
-    # response = requests.get(block_trail_url + request_utxos_url + block_trail_token)
+    try:
+        response = requests.get(block_trail_url + request_utxos_url + block_trail_token)
+
+        if response.status_code != 200:
+            raise RuntimeError("The server returned an error: {}".format(response.json()))
+
+    except:
+        raise RuntimeError("API Limit reached: {}".format(response.json()))
+        
+    print("Response from Block Trail: {}".format(response))
 
     return response
 
