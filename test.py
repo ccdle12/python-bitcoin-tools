@@ -213,20 +213,21 @@ class PointTest(unittest.TestCase):
         print("----------------------------------------------------------------------------------------\n")
 
     def test_points_on_curve(self):
+        print("should throw run time error, points not on curve")
         with self.assertRaises(RuntimeError):
             Point(x=2, y=7, a=5, b=7)
 
-        # Comparing for equality
+        print('should compare two points for equality')
         p1 = Point(18, 77, 5, 7)
         p2 = Point(18, 77, 5, 7)
         self.assertEqual(p1, p2)
 
-        # Adding two points
+        print('should add two different points')
         p1 = Point(x=3, y=7, a=5, b=7)
         p2 = Point(x=-1, y=-1, a=5, b=7)
         self.assertEqual(p1 + p2, Point(x=2, y=-5, a=5, b=7))
 
-        # Adding two points by point doubling
+        print('should add by point doubling')
         a = Point(x=-1, y=1, a=5, b=7)
         self.assertEqual(a + a, Point(x=18, y=-77, a=5, b=7))
 
@@ -244,7 +245,7 @@ class PointTest(unittest.TestCase):
             (21, 47, 71, None, None),
         )
 
-        # iterate over the multiplications
+        print('should multiply points, p1 * coefficient should equal p2')
         for coefficient, _x1, _y1, _x2, _y2 in multiplications:
             x1 = FieldElement(_x1, prime)
             y1 = FieldElement(_y1, prime)
@@ -260,9 +261,21 @@ class PointTest(unittest.TestCase):
 
             # check that the product is equal to the expected point
             self.assertEqual(coefficient * p1, p2)
+    
+    def test_passing_negative_x_co_ordinate(self):
+        print('should NOT be able to pass negative FieldElement values as points on curve')
+        x = -1
+        y = 2
+        prime = 223
 
+        x1 = FieldElement(x, prime)
+        y1 = FieldElement(y, prime)
+        a = FieldElement(0, prime)
+        b = FieldElement(7, prime)
 
+        self.assertTrue(Point(x1, y1, a, b))
 
+ 
 class S256Test(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -500,24 +513,24 @@ class ECCTests(unittest.TestCase):
         print("Private key generated should be above 0 and below ECC.N")
         self.assertTrue(0 < priv_key < N)
 
-    def test_duplicate_priv_key(self):
+    # def test_duplicate_priv_key(self):
 
-        prev_gen_priv_keys = {}
+    #     prev_gen_priv_keys = {}
 
-        # 2.2 GHz Intel Core i7
-        # 16 GB 1600 MHz DDR3
-        # Takes about 9 - 10 seconds to run this test
-        for _ in range(1000000):
-            priv_key = ECC().generate_priv_key()
+    #     # 2.2 GHz Intel Core i7
+    #     # 16 GB 1600 MHz DDR3
+    #     # Takes about 9 - 10 seconds to run this test
+    #     for _ in range(1000000):
+    #         priv_key = ECC().generate_priv_key()
 
-            assert 0 < priv_key < N
+    #         assert 0 < priv_key < N
 
-            if priv_key in prev_gen_priv_keys:
-                raise RuntimeError('Randomly generated number, has been generated before')
+    #         if priv_key in prev_gen_priv_keys:
+    #             raise RuntimeError('Randomly generated number, has been generated before')
 
-            prev_gen_priv_keys[priv_key] = priv_key
+    #         prev_gen_priv_keys[priv_key] = priv_key
 
-        print("There should be no duplicates after creating 1000000 private keys")
+    #     print("There should be no duplicates after creating 1000000 private keys")
 
     def test_generate_pub_key(self):
         priv_key = ECC().generate_priv_key()
